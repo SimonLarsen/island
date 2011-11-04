@@ -1,0 +1,3 @@
+WIDTH = 180
+HEIGHT = 200
+SCALE = 3
