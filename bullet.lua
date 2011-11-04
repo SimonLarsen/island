@@ -5,6 +5,7 @@ function Bullet.create(x,y,dir)
 	local self = {}
 	setmetatable(self,Bullet)
 
+	self.alive = true
 	self.x = x
 	self.y = y
 
@@ -17,6 +18,10 @@ end
 function Bullet:update(dt)
 	self.x = self.x + self.xspeed*dt
 	self.y = self.y + self.yspeed*dt
+
+	if self.x < 0 or self.y < 0 or self.x > WIDTH or self.y > HEIGHT then
+		self.alive = false
+	end
 end
 
 function Bullet:draw()

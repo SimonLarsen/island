@@ -8,24 +8,57 @@ function Player.create(x,y)
 	self.x = x
 	self.y = y
 	self.rot = 0
+	self.dir = 1 -- 1 = left, -1 = right
+	self.walking = false
+	self.yspeed = 0
+	self.frame = 0
 	self.weapon = 0 -- shotgun
 
 	return self
 end
 
 function Player:update(dt)
-	local mx = love.mouse.getX()/SCALE
-	local my = love.mouse.getY()/SCALE
+	self.rot = math.atan2(my-self.y-6, mx-self.x+2)
 
-	self.rot = math.atan2(my-self.y-5, mx-self.x+2)
+	self.walking = false
+	if love.keyboard.isDown("a") then
+		self.x = self.x - PLAYER_SPEED*dt
+		self.walking = true
+		self.dir = 1
+	end
+	if love.keyboard.isDown("d") then
+		self.x = self.x + PLAYER_SPEED*dt
+		self.walking = true
+		self.dir = -1
+	end
+
+	if self.walking == true then
+		self.frame = (self.frame+dt*12)%6
+	else
+		self.frame = 5
+	end
 end
 
 function Player:draw()
-	love.graphics.drawq(tiles,quadPlayer[0],self.x,self.y)
-
-	love.graphics.drawq(tiles,quadWeapon[self.weapon],self.x+3,self.y+5,self.rot+math.pi,1,1,6,2.5)
+	if self.dir == 1 then
+		if self.walking then
+			love.graphics.drawq(tiles,quadPlayer[math.floor(self.frame)+1],self.x,self.y)
+		else
+			love.graphics.drawq(tiles,quadPlayer[0],self.x,self.y)
+		end
+		love.graphics.drawq(tiles,quadWeapon[self.weapon],self.x+3,self.y+6,self.rot+math.pi,1,1,6,2.5)
+	else 
+		if self.walking then
+			love.graphics.drawq(tiles,quadPlayer[math.floor(self.frame)+1],self.x+5,self.y,0,-1,1)
+		else
+			love.graphics.drawq(tiles,quadPlayer[0],self.x+5,self.y,0,-1,1)
+		end
+		love.graphics.drawq(tiles,quadWeapon[self.weapon],self.x+3,self.y+6,self.rot,-1,1,6,2.5)
+	end
 end
 
 function Player:shoot()
-	table.insert(bullets,Bullet.create(self.x+2,self.y+5,self.rot))
+	table.insert(bullets,Bullet.create(self.x+2,self.y+6,self.rot+(math.random()-0.5)/4))
+	table.insert(bullets,Bullet.create(self.x+2,self.y+6,self.rot+(math.random()-0.5)/4))
+	table.insert(bullets,Bullet.create(self.x+2,self.y+6,self.rot+(math.random()-0.5)/4))
 end
