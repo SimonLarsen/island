@@ -10,6 +10,7 @@ function Player.create(x,y)
 	self.rot = 0
 	self.dir = 1 -- 1 = left, -1 = right
 	self.walking = false
+	self.jumping = 0
 	self.yspeed = 0
 	self.frame = 0
 	self.weapon = 0 -- shotgun
@@ -36,6 +37,22 @@ function Player:update(dt)
 		self.frame = (self.frame+dt*12)%6
 	else
 		self.frame = 5
+	end
+
+	self.y = self.y + self.yspeed*dt
+	self.yspeed = self.yspeed + GRAVITY*dt
+
+	if self.y > 111 and self.x > 35 and self.x < 140 then
+		self.yspeed = 0
+		self.y = 111
+		self.jumping = 0
+	end
+end
+
+function Player:keypressed(k)
+	if k == "w" and self.jumping < 2 then
+		self.yspeed = -JUMP_POWER
+		self.jumping = self.jumping + 1
 	end
 end
 

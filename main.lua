@@ -59,6 +59,21 @@ function love.draw()
 	lg.drawq(tiles,quadCross,mx-3,my-3)
 end
 
+function love.keypressed(k,unicode)
+	if k == "escape" then
+		love.event.push("q")
+	elseif k == "g" then
+		love.mouse.setGrab(not love.mouse.isGrabbed())
+		love.mouse.setVisible(not love.mouse.isVisible())
+	end
+
+	pl:keypressed(k)
+end
+
+function love.mousepressed(x,y,button)
+	pl:shoot()		
+end
+
 function loadResources()
 	color = {}
 	color[0] = {236,243,201}	
@@ -91,17 +106,4 @@ function loadResources()
 	for	i = 0,1 do
 		quadWeapon[i] = lg.newQuad(i*16,112,11,5,tiles:getWidth(),tiles:getHeight())
 	end
-end
-
-function love.keypressed(k,unicode)
-	if k == "escape" then
-		love.event.push("q")
-	elseif k == "g" then
-		love.mouse.setGrab(not love.mouse.isGrabbed())
-		love.mouse.setVisible(not love.mouse.isVisible())
-	end
-end
-
-function love.mousepressed(x,y,button)
-	pl:shoot()		
 end
