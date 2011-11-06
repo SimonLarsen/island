@@ -42,9 +42,10 @@ function Player:update(dt)
 	self.y = self.y + self.yspeed*dt
 	self.yspeed = self.yspeed + GRAVITY*dt
 
-	if self.y > 111 and self.x > 35 and self.x < 140 then
-		self.yspeed = 0
+	-- check collision with ground
+	if self.y+13 > 123 and self.y < 123 and self.x > 35 and self.x < 140 then
 		self.y = 111
+		self.yspeed = 0
 		self.jumping = 0
 	end
 end
