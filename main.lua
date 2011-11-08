@@ -1,6 +1,8 @@
 require("defines")
 require("player")
 require("bullet")
+require("shark")
+require("tree")
 
 local lg = love.graphics
 
@@ -13,11 +15,20 @@ function love.load()
 	pl = Player.create(68,90)
 
 	bullets = {}
+	sharks = {}
+
+	trees = {}
+	table.insert(trees,Tree.create(119,109,false))
+	table.insert(trees,Tree.create(65,109,false))
+	table.insert(trees,Tree.create(53,111,true))
 
 	platforms = { {x=40,y=123,w=100,h=1} }
 				  --{x=87,y=109,w=17,h=1} }
 	rainoffset = 0
 	raining = false
+
+	nextthunder = math.random(5,20)
+	thundertime = 0.5
 end
 
 function love.update(dt)
@@ -28,10 +39,39 @@ function love.update(dt)
 
 	if raining then
 		rainoffset = (rainoffset + dt*RAINSPEED)%HEIGHT
+
+		nextthunder = nextthunder - dt
+		if nextthunder < 0 then
+			thundertime = thundertime - dt	
+			if thundertime < 0 then
+				nextthunder = math.random(5,10)
+				thundertime = 0.5
+			end
+		end
 	end
 
 	for	i,v in ipairs(bullets) do
-		v:update(dt)
+		if v.alive then
+			v:update(dt)
+		else
+			table.remove(bullets,i)
+		end
+	end
+
+	for i,v in ipairs(sharks) do
+		if v.alive then
+			v:update(dt)
+		else
+			table.remove(sharks,i)
+		end
+	end
+
+	-- Collision detection
+	for i,v in ipairs(sharks) do
+		if v:collidePlayer(pl) then
+			-- Kill player or something
+			print(dt)
+		end
 	end
 end
 
@@ -43,32 +83,43 @@ function love.draw()
 
 	lg.setColor(255,255,255,255)
 	lg.drawq(tiles,quadIsland,40,120)
-	-- draw back trees
-	lg.drawq(tiles,quadTree[0],119,109)
-	lg.drawq(tiles,quadTree[0],65,109)
 	-- draw trailer
 	lg.drawq(tiles,quadTrailer[0],84,105)
+	-- draw back trees
+	for i,v in ipairs(trees) do
+		v:draw(false)
+	end
 
 	-- draw bullets
 	for	i,v in ipairs(bullets) do
 		if v.alive then
 			v:draw()
-		else
-			table.remove(bullets,i)
 		end
 	end
 
 	-- Draw player
 	pl:draw()
 
-	lg.drawq(tiles,quadTree[0],53,111)
+	-- draw front trees
+	for i,v in ipairs(trees) do
+		v:draw(true)
+	end
+
+	-- draw enemies
+	for i,v in ipairs(sharks) do
+		v:draw()
+	end
 
 	-- Draw crosshair
 	lg.drawq(tiles,quadCross,mx-3,my-3)
 
 	-- draw rain
 	if raining then
-		lg.setColor(255,255,255,128)
+		if nextthunder < 0 then
+			lg.setColor(255,255,255,math.random(0,128))
+		else
+			lg.setColor(255,255,255,128)
+		end
 		lg.drawq(rain,quadRain,0,rainoffset-HEIGHT)
 		lg.drawq(rain,quadRain,0,rainoffset)
 	end
@@ -91,6 +142,10 @@ function love.keypressed(k,unicode)
 	end
 
 	pl:keypressed(k,unicode)
+
+	if k == 'h' then
+		table.insert(sharks,Shark.create(-1))
+	end
 end
 
 function love.mousepressed(x,y,button)
@@ -117,7 +172,7 @@ function loadResources()
 
 	quadTree = {}
 	for	i=0,2 do
-		quadTree[i] = lg.newQuad(9*i,80,9,14,tiles:getWidth(),tiles:getHeight())
+		quadTree[i] = lg.newQuad(8*i,80,8,14,tiles:getWidth(),tiles:getHeight())
 	end
 
 	quadTrailer = {}
@@ -131,8 +186,13 @@ function loadResources()
 	end
 
 	quadWeapon = {}
-	for	i = 0,2 do
-		quadWeapon[i] = lg.newQuad(i*16,112,11,5,tiles:getWidth(),tiles:getHeight())
+	for	i = 0,3 do
+		quadWeapon[i] = lg.newQuad(i*16,112,12,5,tiles:getWidth(),tiles:getHeight())
+	end
+
+	quadShark = {}
+	for i=0,2 do
+		quadShark[i] = lg.newQuad(i*80,128,78,28,tiles:getWidth(),tiles:getHeight())
 	end
 end
 
