@@ -7,11 +7,8 @@ local lg = love.graphics
 function love.load()
 	math.randomseed(os.time())
 	loadResources()
-	lg.setMode(WIDTH*SCALE,HEIGHT*SCALE,false)
+	rescale() -- set window mode
 	lg.setBackgroundColor(color[0])
-
-	love.mouse.setVisible(false)
-	love.mouse.setGrab(true)
 
 	pl = Player.create(68,90)
 
@@ -19,6 +16,8 @@ function love.load()
 
 	platforms = { {x=40,y=123,w=100,h=1} }
 				  --{x=87,y=109,w=17,h=1} }
+	rainoffset = 0
+	raining = false
 end
 
 function love.update(dt)
@@ -26,6 +25,10 @@ function love.update(dt)
 	my = love.mouse.getY()/SCALE
 
 	pl:update(dt)
+
+	if raining then
+		rainoffset = (rainoffset + dt*RAINSPEED)%HEIGHT
+	end
 
 	for	i,v in ipairs(bullets) do
 		v:update(dt)
@@ -40,10 +43,11 @@ function love.draw()
 
 	lg.setColor(255,255,255,255)
 	lg.drawq(tiles,quadIsland,40,120)
+	-- draw back trees
 	lg.drawq(tiles,quadTree[0],119,109)
 	lg.drawq(tiles,quadTree[0],65,109)
-
-	lg.drawq(tiles,quadTrailer[0],84,106)
+	-- draw trailer
+	lg.drawq(tiles,quadTrailer[0],84,105)
 
 	-- draw bullets
 	for	i,v in ipairs(bullets) do
@@ -61,6 +65,13 @@ function love.draw()
 
 	-- Draw crosshair
 	lg.drawq(tiles,quadCross,mx-3,my-3)
+
+	-- draw rain
+	if raining then
+		lg.setColor(255,255,255,128)
+		lg.drawq(rain,quadRain,0,rainoffset-HEIGHT)
+		lg.drawq(rain,quadRain,0,rainoffset)
+	end
 end
 
 function love.keypressed(k,unicode)
@@ -69,13 +80,21 @@ function love.keypressed(k,unicode)
 	elseif k == "g" then
 		love.mouse.setGrab(not love.mouse.isGrabbed())
 		love.mouse.setVisible(not love.mouse.isVisible())
+	elseif k == 'r' then raining = not raining
+
+	elseif k == 'f1' then SCALE = 1 rescale() 
+	elseif k == 'f2' then SCALE = 2 rescale() 
+	elseif k == 'f3' then SCALE = 3 rescale() 
+	elseif k == 'f4' then SCALE = 4 rescale() 
+	elseif k == 'f5' then SCALE = 5 rescale() 
+	elseif k == 'f6' then SCALE = 6 rescale() 
 	end
 
-	pl:keypressed(k)
+	pl:keypressed(k,unicode)
 end
 
 function love.mousepressed(x,y,button)
-	pl:shoot()		
+	pl:mousepressed(button)
 end
 
 function loadResources()
@@ -88,8 +107,13 @@ function loadResources()
 	tiles = lg.newImage("res/tiles.png")
 	tiles:setFilter("nearest","nearest")
 
+	rain = lg.newImage("res/rain.png")
+	rain:setFilter("nearest","nearest")
+
 	quadIsland = lg.newQuad(0,0,100,89,tiles:getWidth(),tiles:getHeight())
 	quadCross = lg.newQuad(64,105,7,7,tiles:getWidth(),tiles:getHeight())
+
+	quadRain = lg.newQuad(0,0,WIDTH,HEIGHT,rain:getWidth(),rain:getHeight())
 
 	quadTree = {}
 	for	i=0,2 do
@@ -98,7 +122,7 @@ function loadResources()
 
 	quadTrailer = {}
 	for	i = 0,3 do
-		quadTrailer[i] = lg.newQuad(32+i*24,80,24,18,tiles:getWidth(),tiles:getHeight())
+		quadTrailer[i] = lg.newQuad(32+i*24,79,24,19,tiles:getWidth(),tiles:getHeight())
 	end
 
 	quadPlayer = {}
@@ -107,7 +131,13 @@ function loadResources()
 	end
 
 	quadWeapon = {}
-	for	i = 0,1 do
+	for	i = 0,2 do
 		quadWeapon[i] = lg.newQuad(i*16,112,11,5,tiles:getWidth(),tiles:getHeight())
 	end
+end
+
+function rescale()
+	lg.setMode(WIDTH*SCALE,HEIGHT*SCALE)
+	love.mouse.setVisible(false)
+	love.mouse.setGrab(true)
 end

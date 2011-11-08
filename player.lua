@@ -13,7 +13,7 @@ function Player.create(x,y)
 	self.jumping = 0
 	self.yspeed = 0
 	self.frame = 0
-	self.weapon = 0 -- shotgun
+	self.weapon = 0 -- gun
 
 	return self
 end
@@ -56,6 +56,7 @@ function Player:update(dt)
 			end
 		end
 	end
+
 	self.yspeed = self.yspeed + GRAVITY*dt
 end
 
@@ -78,13 +79,6 @@ function Player:collidePlatform(p)
 	return true
 end
 
-function Player:keypressed(k)
-	if k == "w" and self.jumping < 2 then
-		self.yspeed = -JUMP_POWER
-		self.jumping = self.jumping + 1
-	end
-end
-
 function Player:draw()
 	if self.dir == 1 then
 		if self.walking then
@@ -104,7 +98,30 @@ function Player:draw()
 end
 
 function Player:shoot()
-	table.insert(bullets,Bullet.create(self.x+2,self.y+6,self.rot+(math.random()-0.5)/4))
-	table.insert(bullets,Bullet.create(self.x+2,self.y+6,self.rot+(math.random()-0.5)/4))
-	table.insert(bullets,Bullet.create(self.x+2,self.y+6,self.rot+(math.random()-0.5)/4))
+	if self.weapon == 0 then -- gun
+		table.insert(bullets,Bullet.create(self.x+2,self.y+5.5,self.rot))
+	elseif self.weapon == 1 then -- shotgun
+		table.insert(bullets,Bullet.create(self.x+2,self.y+6,self.rot+(math.random()-0.5)/4))
+		table.insert(bullets,Bullet.create(self.x+2,self.y+6,self.rot+(math.random()-0.5)/4))
+		table.insert(bullets,Bullet.create(self.x+2,self.y+6,self.rot+(math.random()-0.5)/4))
+	elseif self.weapon == 2 then -- bazooka
+		-- TODO: Create rocket }[]==>
+	end
+end
+
+function Player:keypressed(k,unicode)
+	if k == "w" and self.jumping < 2 then
+		self.yspeed = -JUMP_POWER
+		self.jumping = self.jumping + 1
+	end
+end
+
+function Player:mousepressed(button)
+	if button == 'l' then
+		self:shoot()
+	elseif button == 'wu' then
+		self.weapon = (self.weapon+1)%3
+	elseif button == 'wd' then
+		self.weapon = (self.weapon-1)%3
+	end
 end
