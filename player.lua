@@ -1,6 +1,8 @@
 Player = {}
 Player.__index = Player
 
+local lg = love.graphics
+
 function Player.create(x,y)
 	local self = {}
 	setmetatable(self,Player)
@@ -21,6 +23,9 @@ end
 function Player:update(dt)
 	self.rot = math.atan2(my-self.y-6, mx-self.x+2)
 
+	local oldx,oldy
+	oldx, oldy = self.x, self.y
+
 	self.walking = false
 	if love.keyboard.isDown("a") then
 		self.x = self.x - PLAYER_SPEED*dt
@@ -39,22 +44,15 @@ function Player:update(dt)
 		self.frame = 5
 	end
 
-	local newy,oldy
-	newy, oldy = self.y+self.yspeed*dt, self.y
-
-	-- check collision with ground
-	self.y = newy
 	if self:collidePlatforms() then
-		if self.yspeed > 0 then
-			self.y = oldy
-			if self:collidePlatforms() == false then
-				self.yspeed = self.yspeed/2
-				self.jumping = 0
-			else
-				self.y = newy
-				self.yspeed = self.yspeed + GRAVITY*dt
-			end
-		end
+		self.x = oldx
+	end
+
+	self.y = self.y+self.yspeed*dt
+	if self:collidePlatforms() then
+		self.y = oldy
+		self.yspeed = self.yspeed/2
+		self.jumping = 0
 	end
 
 	self.yspeed = self.yspeed + GRAVITY*dt
@@ -70,8 +68,8 @@ function Player:collidePlatforms()
 end
 
 function Player:collidePlatform(p)
-	if self.x > p.x+p.w
-	or self.x+6 < p.x
+	if self.x+1 > p.x+p.w
+	or self.x+4 < p.x
 	or self.y > p.y+p.h
 	or self.y+13 < p.y then
 		return false
@@ -82,18 +80,18 @@ end
 function Player:draw()
 	if self.dir == -1 then
 		if self.walking then
-			love.graphics.drawq(tiles,quadPlayer[math.floor(self.frame)+1],self.x,self.y)
+			lg.drawq(tiles,quadPlayer[math.floor(self.frame)+1],self.x,self.y)
 		else
-			love.graphics.drawq(tiles,quadPlayer[0],self.x,self.y)
+			lg.drawq(tiles,quadPlayer[0],self.x,self.y)
 		end
-		love.graphics.drawq(tiles,quadWeapon[self.weapon],self.x+3,self.y+6,self.rot+math.pi,1,1,8,2.5)
+		lg.drawq(tiles,quadWeapon[self.weapon],self.x+3,self.y+6,self.rot+math.pi,1,1,8,2.5)
 	else 
 		if self.walking then
-			love.graphics.drawq(tiles,quadPlayer[math.floor(self.frame)+1],self.x+5,self.y,0,-1,1)
+			lg.drawq(tiles,quadPlayer[math.floor(self.frame)+1],self.x+5,self.y,0,-1,1)
 		else
-			love.graphics.drawq(tiles,quadPlayer[0],self.x+5,self.y,0,-1,1)
+			lg.drawq(tiles,quadPlayer[0],self.x+5,self.y,0,-1,1)
 		end
-		love.graphics.drawq(tiles,quadWeapon[self.weapon],self.x+2,self.y+6,self.rot,-1,1,8,2.5)
+		lg.drawq(tiles,quadWeapon[self.weapon],self.x+2,self.y+6,self.rot,-1,1,8,2.5)
 	end
 end
 

@@ -3,6 +3,7 @@ require("player")
 require("bullet")
 require("shark")
 require("tree")
+require("weather")
 
 local lg = love.graphics
 
@@ -22,8 +23,9 @@ function love.load()
 	table.insert(trees,Tree.create(43,109,false))
 	table.insert(trees,Tree.create(31,111,true))
 
-	platforms = { {x=18,y=124,w=147,h=1} }
-				  --{x=87,y=109,w=17,h=1} }
+	platforms = { {x=18,y=124,w=147,h=2},
+				  {x=67,y=109,w=23,h=14} }
+
 	rainoffset = 0
 	raining = false
 
@@ -37,18 +39,7 @@ function love.update(dt)
 
 	pl:update(dt)
 
-	if raining then
-		rainoffset = (rainoffset + dt*RAINSPEED)%HEIGHT
-
-		nextthunder = nextthunder - dt
-		if nextthunder < 0 then
-			thundertime = thundertime - dt	
-			if thundertime < 0 then
-				nextthunder = math.random(5,10)
-				thundertime = 0.5
-			end
-		end
-	end
+	updateWeather(dt)
 
 	for	i,v in ipairs(bullets) do
 		if v.alive then
@@ -85,7 +76,7 @@ function love.draw()
 	-- draw island
 	lg.drawq(tiles,quadIsland,18,115)
 	-- draw trailer
-	lg.drawq(tiles,quadTrailer[0],62,105)
+	lg.drawq(tiles,quadTrailer[0],67,106)
 	-- draw back trees
 	for i,v in ipairs(trees) do
 		v:draw(false)
@@ -107,17 +98,8 @@ function love.draw()
 	for i,v in ipairs(sharks) do
 		v:draw()
 	end
-	-- draw rain
-	if raining then
-		if nextthunder < 0 then
-			lg.setColor(255,255,255,math.random(0,128))
-		else
-			lg.setColor(255,255,255,128)
-		end
-		lg.drawq(rain,quadRain,0,rainoffset-HEIGHT)
-		lg.drawq(rain,quadRain,0,rainoffset)
-		lg.setColor(255,255,255,255)
-	end
+	-- draw weather effects
+	drawWeather()
 	-- Draw crosshair
 	lg.drawq(tiles,quadCross,mx-3,my-3)
 end
