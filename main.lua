@@ -12,17 +12,17 @@ function love.load()
 	rescale() -- set window mode
 	lg.setBackgroundColor(color[0])
 
-	pl = Player.create(68,90)
+	pl = Player.create(54,90)
 
 	bullets = {}
 	sharks = {}
 
 	trees = {}
-	table.insert(trees,Tree.create(119,109,false))
-	table.insert(trees,Tree.create(65,109,false))
-	table.insert(trees,Tree.create(53,111,true))
+	table.insert(trees,Tree.create(97,109,false))
+	table.insert(trees,Tree.create(43,109,false))
+	table.insert(trees,Tree.create(31,111,true))
 
-	platforms = { {x=40,y=123,w=100,h=1} }
+	platforms = { {x=18,y=124,w=147,h=1} }
 				  --{x=87,y=109,w=17,h=1} }
 	rainoffset = 0
 	raining = false
@@ -80,39 +80,33 @@ function love.draw()
 
 	lg.setColor(color[1])
 	lg.rectangle("fill",0,146,180,54)
-
 	lg.setColor(255,255,255,255)
-	lg.drawq(tiles,quadIsland,40,120)
+
+	-- draw island
+	lg.drawq(tiles,quadIsland,18,115)
 	-- draw trailer
-	lg.drawq(tiles,quadTrailer[0],84,105)
+	lg.drawq(tiles,quadTrailer[0],62,105)
 	-- draw back trees
 	for i,v in ipairs(trees) do
 		v:draw(false)
 	end
-
 	-- draw bullets
 	for	i,v in ipairs(bullets) do
 		if v.alive then
 			v:draw()
 		end
 	end
-
 	-- Draw player
 	pl:draw()
-
-	-- draw front trees
+	-- draw front trees and poles
 	for i,v in ipairs(trees) do
 		v:draw(true)
 	end
-
+	lg.drawq(tiles,quadPoles,119,119)
 	-- draw enemies
 	for i,v in ipairs(sharks) do
 		v:draw()
 	end
-
-	-- Draw crosshair
-	lg.drawq(tiles,quadCross,mx-3,my-3)
-
 	-- draw rain
 	if raining then
 		if nextthunder < 0 then
@@ -122,7 +116,10 @@ function love.draw()
 		end
 		lg.drawq(rain,quadRain,0,rainoffset-HEIGHT)
 		lg.drawq(rain,quadRain,0,rainoffset)
+		lg.setColor(255,255,255,255)
 	end
+	-- Draw crosshair
+	lg.drawq(tiles,quadCross,mx-3,my-3)
 end
 
 function love.keypressed(k,unicode)
@@ -165,34 +162,35 @@ function loadResources()
 	rain = lg.newImage("res/rain.png")
 	rain:setFilter("nearest","nearest")
 
-	quadIsland = lg.newQuad(0,0,100,89,tiles:getWidth(),tiles:getHeight())
-	quadCross = lg.newQuad(64,105,7,7,tiles:getWidth(),tiles:getHeight())
+	quadIsland = lg.newQuad(0,0,148,85,tiles:getWidth(),tiles:getHeight())
+	quadPoles = lg.newQuad(160,4,37,81,tiles:getWidth(),tiles:getHeight())
+	quadCross = lg.newQuad(64,121,7,7,tiles:getWidth(),tiles:getHeight())
 
 	quadRain = lg.newQuad(0,0,WIDTH,HEIGHT,rain:getWidth(),rain:getHeight())
 
 	quadTree = {}
 	for	i=0,2 do
-		quadTree[i] = lg.newQuad(8*i,80,8,14,tiles:getWidth(),tiles:getHeight())
+		quadTree[i] = lg.newQuad(8*i,96,8,14,tiles:getWidth(),tiles:getHeight())
 	end
 
 	quadTrailer = {}
 	for	i = 0,3 do
-		quadTrailer[i] = lg.newQuad(32+i*24,79,24,19,tiles:getWidth(),tiles:getHeight())
+		quadTrailer[i] = lg.newQuad(32+i*24,96,23,18,tiles:getWidth(),tiles:getHeight())
 	end
 
 	quadPlayer = {}
 	for	i = 0,6 do
-		quadPlayer[i] = lg.newQuad(i*7,99,7,13,tiles:getWidth(),tiles:getHeight())
+		quadPlayer[i] = lg.newQuad(i*7,115,7,13,tiles:getWidth(),tiles:getHeight())
 	end
 
 	quadWeapon = {}
 	for	i = 0,3 do
-		quadWeapon[i] = lg.newQuad(i*16,112,12,5,tiles:getWidth(),tiles:getHeight())
+		quadWeapon[i] = lg.newQuad(i*16,128,12,5,tiles:getWidth(),tiles:getHeight())
 	end
 
 	quadShark = {}
 	for i=0,2 do
-		quadShark[i] = lg.newQuad(i*80,128,78,28,tiles:getWidth(),tiles:getHeight())
+		quadShark[i] = lg.newQuad(i*80,144,78,28,tiles:getWidth(),tiles:getHeight())
 	end
 end
 
