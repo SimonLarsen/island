@@ -13,9 +13,12 @@ function love.load()
 	love.mouse.setVisible(false)
 	love.mouse.setGrab(true)
 
-	pl = Player.create(68,111)
+	pl = Player.create(68,90)
 
 	bullets = {}
+
+	platforms = { {x=40,y=123,w=100,h=1} }
+				  --{x=87,y=109,w=17,h=1} }
 end
 
 function love.update(dt)
@@ -38,6 +41,7 @@ function love.draw()
 	lg.setColor(255,255,255,255)
 	lg.drawq(tiles,quadIsland,40,120)
 	lg.drawq(tiles,quadTree[0],119,109)
+	lg.drawq(tiles,quadTree[0],65,109)
 
 	lg.drawq(tiles,quadTrailer[0],84,106)
 

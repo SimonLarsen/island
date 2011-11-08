@@ -39,15 +39,43 @@ function Player:update(dt)
 		self.frame = 5
 	end
 
-	self.y = self.y + self.yspeed*dt
-	self.yspeed = self.yspeed + GRAVITY*dt
+	local newy,oldy
+	newy, oldy = self.y+self.yspeed*dt, self.y
 
 	-- check collision with ground
-	if self.y+13 > 123 and self.y < 123 and self.x > 35 and self.x < 140 then
-		self.y = 111
-		self.yspeed = 0
-		self.jumping = 0
+	self.y = newy
+	if self:collidePlatforms() then
+		if self.yspeed > 0 then
+			self.y = oldy
+			if self:collidePlatforms() == false then
+				self.yspeed = self.yspeed/2
+				self.jumping = 0
+			else
+				self.y = newy
+				self.yspeed = self.yspeed + GRAVITY*dt
+			end
+		end
 	end
+	self.yspeed = self.yspeed + GRAVITY*dt
+end
+
+function Player:collidePlatforms()
+	for i,v in ipairs(platforms) do
+		if self:collidePlatform(v) then
+			return true
+		end
+	end
+	return false
+end
+
+function Player:collidePlatform(p)
+	if self.x > p.x+p.w
+	or self.x+6 < p.x
+	or self.y > p.y+p.h
+	or self.y+13 < p.y then
+		return false
+	end
+	return true
 end
 
 function Player:keypressed(k)
