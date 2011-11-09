@@ -24,7 +24,7 @@ function love.load()
 	table.insert(trees,Tree.create(31,111,true))
 
 	platforms = { {x=18,y=124,w=147,h=2},
-				  {x=67,y=109,w=23,h=14} }
+				  {x=68,y=109,w=21,h=14} }
 
 	rainoffset = 0
 	raining = false
@@ -162,12 +162,13 @@ function loadResources()
 
 	quadPlayer = {}
 	for	i = 0,6 do
-		quadPlayer[i] = lg.newQuad(i*7,115,7,13,tiles:getWidth(),tiles:getHeight())
+		quadPlayer[i] = lg.newQuad(i*8,115,8,13,tiles:getWidth(),tiles:getHeight())
 	end
 
 	quadWeapon = {}
-	for	i = 0,3 do
-		quadWeapon[i] = lg.newQuad(i*16,128,12,5,tiles:getWidth(),tiles:getHeight())
+	quadWeapon[0] = lg.newQuad(0,139,16,5,tiles:getWidth(),tiles:getHeight())
+	for	i = 1,3 do
+		quadWeapon[i] = lg.newQuad(i*16,128,16,5,tiles:getWidth(),tiles:getHeight())
 	end
 
 	quadShark = {}

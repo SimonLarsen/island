@@ -68,8 +68,8 @@ function Player:collidePlatforms()
 end
 
 function Player:collidePlatform(p)
-	if self.x+1 > p.x+p.w
-	or self.x+4 < p.x
+	if self.x-2 > p.x+p.w
+	or self.x+2 < p.x
 	or self.y > p.y+p.h
 	or self.y+13 < p.y then
 		return false
@@ -78,20 +78,16 @@ function Player:collidePlatform(p)
 end
 
 function Player:draw()
-	if self.dir == -1 then
-		if self.walking then
-			lg.drawq(tiles,quadPlayer[math.floor(self.frame)+1],self.x,self.y)
-		else
-			lg.drawq(tiles,quadPlayer[0],self.x,self.y)
-		end
-		lg.drawq(tiles,quadWeapon[self.weapon],self.x+3,self.y+6,self.rot+math.pi,1,1,8,2.5)
-	else 
-		if self.walking then
-			lg.drawq(tiles,quadPlayer[math.floor(self.frame)+1],self.x+5,self.y,0,-1,1)
-		else
-			lg.drawq(tiles,quadPlayer[0],self.x+5,self.y,0,-1,1)
-		end
-		lg.drawq(tiles,quadWeapon[self.weapon],self.x+2,self.y+6,self.rot,-1,1,8,2.5)
+	local xsc = 1
+	if self.dir == 1 then xsc = -1 end
+	local fr = 0
+	if self.walking then fr = math.floor(self.frame)+1 end
+
+	lg.drawq(tiles,quadPlayer[fr],self.x,self.y,0,xsc,1,4,0)
+	if self.weapon ~= 0 then -- gun
+		lg.drawq(tiles,quadWeapon[self.weapon],self.x,self.y+6,self.rot,-1,-xsc,8,2.5)
+	else -- lightsaber
+		lg.drawq(tiles,quadWeapon[self.weapon],self.x,self.y+6,self.rot,-1,1,16,2.5)
 	end
 end
 
