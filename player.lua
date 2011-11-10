@@ -15,13 +15,13 @@ function Player.create(x,y)
 	self.jumping = 0
 	self.yspeed = 0
 	self.frame = 0
-	self.weapon = 1 -- gun
+	self.weapon = 2 -- gun
 
 	return self
 end
 
 function Player:update(dt)
-	self.rot = math.atan2(my-self.y-6, mx-self.x+2)
+	self.rot = math.atan2(my-self.y-5.5, mx-self.x+0.5)
 
 	local oldx,oldy
 	oldx, oldy = self.x, self.y
@@ -51,8 +51,8 @@ function Player:update(dt)
 	self.y = self.y+self.yspeed*dt
 	if self:collidePlatforms() then
 		self.y = oldy
+		if self.yspeed > 0 then self.jumping = 0 end
 		self.yspeed = self.yspeed/2
-		self.jumping = 0
 	end
 
 	self.yspeed = self.yspeed + GRAVITY*dt
@@ -93,11 +93,13 @@ end
 
 function Player:shoot()
 	if self.weapon == 1 then -- gun
-		table.insert(bullets,Bullet.create(self.x+2,self.y+5.5,self.rot))
+		table.insert(bullets,Bullet.create(self.x,self.y+5.5,self.rot))
 	elseif self.weapon == 2 then -- shotgun
-		table.insert(bullets,Bullet.create(self.x+2,self.y+6,self.rot+(math.random()-0.5)/4))
-		table.insert(bullets,Bullet.create(self.x+2,self.y+6,self.rot+(math.random()-0.5)/4))
-		table.insert(bullets,Bullet.create(self.x+2,self.y+6,self.rot+(math.random()-0.5)/4))
+		table.insert(bullets,Bullet.create(self.x,self.y+5.5,self.rot+(math.random()-0.5)/2))
+		table.insert(bullets,Bullet.create(self.x,self.y+5.5,self.rot+(math.random()-0.5)/2))
+		table.insert(bullets,Bullet.create(self.x,self.y+5.5,self.rot+(math.random()-0.5)/2))
+		table.insert(bullets,Bullet.create(self.x,self.y+5.5,self.rot+(math.random()-0.5)/2))
+		table.insert(bullets,Bullet.create(self.x,self.y+5.5,self.rot+(math.random()-0.5)/2))
 	elseif self.weapon == 3 then -- bazooka
 		-- TODO: Create rocket }[]==>
 	end

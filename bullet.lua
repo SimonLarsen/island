@@ -11,6 +11,7 @@ function Bullet.create(x,y,dir)
 
 	self.xspeed = BULLET_SPEED*math.cos(dir)
 	self.yspeed = BULLET_SPEED*math.sin(dir)
+	self.damage = 10
 
 	return self
 end
