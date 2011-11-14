@@ -5,6 +5,7 @@ require("bullet")
 require("shark")
 require("tree")
 require("weather")
+require("blood")
 
 local lg = love.graphics
 
@@ -19,6 +20,7 @@ function love.load()
 	bullets = {}
 	sharks = {}
 	particles = {}
+	blood = {}
 
 	trees = {}
 	table.insert(trees,Tree.create(97,109,false))
@@ -26,10 +28,11 @@ function love.load()
 	table.insert(trees,Tree.create(31,111,true))
 
 	platforms = { {x=18,y=124,w=147,h=2} }
-				 -- {x=68,y=109,w=21,h=14} }
+				 --{x=68,y=109,w=21,h=14} }
 
 	rainoffset = 0
 	raining = false
+	blood_enabled = true
 
 	nextthunder = math.random(5,20)
 	thundertime = 0.5
@@ -59,6 +62,14 @@ function love.update(dt)
 		end
 	end
 
+	for i,v in ipairs(blood) do
+		if v.alive then
+			v:update(dt)
+		else
+			table.remove(blood,i)
+		end
+	end
+
 	for i,v in ipairs(particles) do
 		if v.alive then
 			v:update(dt)
@@ -67,7 +78,6 @@ function love.update(dt)
 		end
 	end
 
-	-- 
 	for i,v in ipairs(sharks) do
 		if v:collidePlayer(pl) then
 			-- Kill player or something
@@ -105,6 +115,8 @@ function love.draw()
 		v:draw(true)
 	end
 	lg.drawq(tiles,quadPoles,119,119)
+	-- draw blood
+	drawBlood()
 	-- draw enemies
 	for i,v in ipairs(sharks) do
 		v:draw()
@@ -133,13 +145,15 @@ function love.keypressed(k,unicode)
 	elseif k == 'f4' then SCALE = 4 rescale() 
 	elseif k == 'f5' then SCALE = 5 rescale() 
 	elseif k == 'f6' then SCALE = 6 rescale() 
+	
+	-- debugging keys
+	elseif k == 'h' then
+		table.insert(sharks,Shark.create(-1))
+	elseif k == 'b' then
+		blood_enabled = not blood_enabled
 	end
 
 	pl:keypressed(k,unicode)
-
-	if k == 'h' then
-		table.insert(sharks,Shark.create(-1))
-	end
 end
 
 function love.mousepressed(x,y,button)

@@ -66,8 +66,9 @@ function Shark:draw()
 	elseif self.yspeed >= 0 and self.y > 80 then fr = math.floor(self.frame) end
 
 	lg.drawq(tiles,quadShark[fr],self.x,self.y,self.rot,1,ysc,39,14)
+end
 
-	--[[
+function Shark:drawHitCircles()
 	lg.setColor(0,255,0,255)
 	for i=0,3 do
 		lg.circle("fill",self.colx[i],self.coly[i],8,16)
@@ -76,7 +77,6 @@ function Shark:draw()
 	lg.circle("fill",self.colx[4],self.coly[4],8,16)
 
 	lg.setColor(255,255,255,255)
-	--]]
 end
 
 function Shark:collideBullets(bullets)
@@ -87,7 +87,15 @@ function Shark:collideBullets(bullets)
 			if self.hp[part] <= 0 then
 				self:explode(part,v.xspeed,v.yspeed)
 			end
-			table.remove(bullets,i)
+
+			if blood_enabled then
+				table.insert(blood,BloodParticle.create(v.x,v.y,math.random()-0.5+math.atan2(v.yspeed,v.xspeed)))
+				table.insert(blood,BloodParticle.create(v.x,v.y,math.random()-0.5+math.atan2(v.yspeed,v.xspeed)))
+				table.insert(blood,BloodParticle.create(v.x,v.y,math.random()-0.5+math.atan2(v.yspeed,v.xspeed)))
+				table.insert(blood,BloodParticle.create(v.x,v.y,math.random()-0.5+math.atan2(v.yspeed,v.xspeed)))
+				table.remove(bullets,i)
+			end
+
 			return
 		end
 	end
@@ -113,7 +121,7 @@ function Shark:collideCircleBody(x,y,r)
 	end
 end
 
-function Shark:explode(part,xspeed,yspeed)
+function Shark:explode(part,xspeed,yspeed,hitx,hity)
 	self.alive = false
 	
 	for i=0,4 do
@@ -148,6 +156,7 @@ function SharkPart.create(part,x,y,xspeed,yspeed,rot,rotspeed)
 	self.rot = rot
 	self.rotspeed = rotspeed
 	self.alive = true
+	self.nextblood = 0.05
 
 	return self
 end
@@ -157,6 +166,14 @@ function SharkPart:update(dt)
 	self.y = self.y + self.yspeed*dt
 	self.yspeed = self.yspeed + GRAVITY*dt
 	self.rot = self.rot + self.rotspeed*dt
+
+	if blood_enabled then
+		self.nextblood = self.nextblood - dt
+		if self.nextblood < 0 then
+			table.insert(blood,BloodParticle.create(self.x,self.y,self.rot))
+			self.nextblood = 0.02
+		end
+	end
 
 	if self.y > HEIGHT+27 then self.alive = false end
 end
