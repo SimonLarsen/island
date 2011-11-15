@@ -55,6 +55,10 @@ function Player:update(dt)
 		self.yspeed = self.yspeed/2
 	end
 
+	if self.weapon == 0 then
+		table.insert(bullets,Damage.create(self.x+math.cos(self.rot)*15,self.y+5.5+math.sin(self.rot)*15,0.1,1))
+	end
+
 	self.yspeed = self.yspeed + GRAVITY*dt
 end
 

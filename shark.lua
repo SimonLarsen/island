@@ -24,10 +24,7 @@ function Shark.create()
 	self.coly = {}
 	self.hp = {}
 
-	self.hp[0] = 20
-	for i=1,5 do
-		self.hp[i] = 40
-	end
+	self.hp = 80
 
 	self:update(0)
 
@@ -66,6 +63,8 @@ function Shark:draw()
 	elseif self.yspeed >= 0 and self.y > 80 then fr = math.floor(self.frame) end
 
 	lg.drawq(tiles,quadShark[fr],self.x,self.y,self.rot,1,ysc,39,14)
+
+	self:drawHitCircles()
 end
 
 function Shark:drawHitCircles()
@@ -81,20 +80,22 @@ end
 
 function Shark:collideBullets(bullets)
 	for i,v in ipairs(bullets) do
-		hit,part = self:collideCircleBody(v.x,v.y,1)
+		hit, part = self:collideCircleBody(v.x,v.y,v.r)
 		if hit then
-			self.hp[part] = self.hp[part] - v.damage
-			if self.hp[part] <= 0 then
+			if part == 4 then self.hp = self.hp - 2*v.damage -- double damage to head
+			else self.hp = self.hp - v.damage end
+
+			if self.hp <= 0 then
 				self:explode(part,v.xspeed,v.yspeed)
+				self.alive = false
 			end
 
 			if blood_enabled then
-				table.insert(blood,BloodParticle.create(v.x,v.y,math.random()-0.5+math.atan2(v.yspeed,v.xspeed)))
-				table.insert(blood,BloodParticle.create(v.x,v.y,math.random()-0.5+math.atan2(v.yspeed,v.xspeed)))
-				table.insert(blood,BloodParticle.create(v.x,v.y,math.random()-0.5+math.atan2(v.yspeed,v.xspeed)))
-				table.insert(blood,BloodParticle.create(v.x,v.y,math.random()-0.5+math.atan2(v.yspeed,v.xspeed)))
-				table.remove(bullets,i)
+				for i = 0,3 do
+					table.insert(blood,BloodParticle.create(v.x,v.y,math.random()-0.5+math.atan2(v.yspeed,v.xspeed)))
+				end
 			end
+			table.remove(bullets,i)
 
 			return
 		end
@@ -122,8 +123,6 @@ function Shark:collideCircleBody(x,y,r)
 end
 
 function Shark:explode(part,xspeed,yspeed,hitx,hity)
-	self.alive = false
-	
 	for i=0,4 do
 		local xsp = xspeed
 		local ysp = yspeed+math.random(-150,0)
@@ -171,7 +170,7 @@ function SharkPart:update(dt)
 		self.nextblood = self.nextblood - dt
 		if self.nextblood < 0 then
 			table.insert(blood,BloodParticle.create(self.x,self.y,self.rot))
-			self.nextblood = 0.02
+			self.nextblood = 0.015
 		end
 	end
 

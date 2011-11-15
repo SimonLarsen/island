@@ -2,10 +2,11 @@ require("defines")
 require("util.lua")
 require("player")
 require("bullet")
-require("shark")
-require("tree")
-require("weather")
 require("blood")
+require("shark")
+require("ninja")
+require("weather")
+require("tree")
 
 local lg = love.graphics
 
@@ -18,7 +19,7 @@ function love.load()
 	pl = Player.create(54,90)
 
 	bullets = {}
-	sharks = {}
+	enemies = {}
 	particles = {}
 	blood = {}
 
@@ -54,11 +55,11 @@ function love.update(dt)
 		end
 	end
 
-	for i,v in ipairs(sharks) do
+	for i,v in ipairs(enemies) do
 		if v.alive then
 			v:update(dt)
 		else
-			table.remove(sharks,i)
+			table.remove(enemies,i)
 		end
 	end
 
@@ -78,10 +79,10 @@ function love.update(dt)
 		end
 	end
 
-	for i,v in ipairs(sharks) do
+	for i,v in ipairs(enemies) do
 		if v:collidePlayer(pl) then
 			-- Kill player or something
-			print(dt)
+			print("Player hit " .. dt)
 		end
 		v:collideBullets(bullets)
 	end
@@ -118,7 +119,7 @@ function love.draw()
 	-- draw blood
 	drawBlood()
 	-- draw enemies
-	for i,v in ipairs(sharks) do
+	for i,v in ipairs(enemies) do
 		v:draw()
 	end
 	-- draw particles
@@ -148,7 +149,9 @@ function love.keypressed(k,unicode)
 	
 	-- debugging keys
 	elseif k == 'h' then
-		table.insert(sharks,Shark.create(-1))
+		table.insert(enemies,Shark.create())
+	elseif k == 'n' then
+		table.insert(enemies,Ninja.create())
 	elseif k == 'b' then
 		blood_enabled = not blood_enabled
 	end
