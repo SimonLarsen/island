@@ -49,10 +49,14 @@ function createQuads()
 		quadShark[i] = lg.newQuad(i*80,144,78,28,tiles:getWidth(),tiles:getHeight())
 	end
 
-	quadSharkPart = {}
+	quadBodyPart = {}
+	-- shark parts
 	for i=0,4 do
-		quadSharkPart[i] = lg.newQuad(i*16,176,16,27,tiles:getWidth(),tiles:getHeight())
+		quadBodyPart[i] = lg.newQuad(i*16,176,16,27,tiles:getWidth(),tiles:getHeight())
 	end
+	-- ninja parts
+	quadBodyPart[5] = lg.newQuad(96,176,8,7,tiles:getWidth(),tiles:getHeight())
+	quadBodyPart[6] = lg.newQuad(104,176,8,7,tiles:getWidth(),tiles:getHeight())
 
 	quadNinja = {}
 	for i=0,6 do

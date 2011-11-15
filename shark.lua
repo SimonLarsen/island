@@ -63,8 +63,6 @@ function Shark:draw()
 	elseif self.yspeed >= 0 and self.y > 80 then fr = math.floor(self.frame) end
 
 	lg.drawq(tiles,quadShark[fr],self.x,self.y,self.rot,1,ysc,39,14)
-
-	self:drawHitCircles()
 end
 
 function Shark:drawHitCircles()
@@ -136,49 +134,6 @@ function Shark:explode(part,xspeed,yspeed,hitx,hity)
 
 		local rspd = math.random(-15,15)
 
-		table.insert(particles,SharkPart.create(i,self.colx[i],self.coly[i],xsp,ysp,self.rot,rspd))
+		table.insert(particles,BodyPart.create(i,self.colx[i],self.coly[i],xsp,ysp,self.rot,rspd))
 	end
-end
-
-SharkPart = {}
-SharkPart.__index = SharkPart
-
-function SharkPart.create(part,x,y,xspeed,yspeed,rot,rotspeed)
-	local self = {}
-	setmetatable(self,SharkPart)
-
-	self.part = part
-	self.x = x
-	self.y = y
-	self.xspeed = xspeed
-	self.yspeed = yspeed
-	self.rot = rot
-	self.rotspeed = rotspeed
-	self.alive = true
-	self.nextblood = 0.05
-
-	return self
-end
-
-function SharkPart:update(dt)
-	self.x = self.x + self.xspeed*dt
-	self.y = self.y + self.yspeed*dt
-	self.yspeed = self.yspeed + GRAVITY*dt
-	self.rot = self.rot + self.rotspeed*dt
-
-	if blood_enabled then
-		self.nextblood = self.nextblood - dt
-		if self.nextblood < 0 then
-			table.insert(blood,BloodParticle.create(self.x,self.y,self.rot))
-			self.nextblood = 0.015
-		end
-	end
-
-	if self.y > HEIGHT+27 then self.alive = false end
-end
-
-function SharkPart:draw()
-	local ysc = 1
-	if self.xspeed < 0 then ysc = -1 end
-	lg.drawq(tiles,quadSharkPart[self.part],self.x,self.y,self.rot,1,ysc,8,13.5)
 end
