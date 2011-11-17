@@ -35,8 +35,7 @@ function BloodParticle:update(dt)
 end
 
 function drawBlood()
-	--lg.setColor(color[3])
-	lg.setColor(180,0,0,255)
+	lg.setColor(130,0,0,255)
 	for i,v in ipairs(blood) do
 		lg.circle("fill",v.x,v.y,v.radius,5)
 	end

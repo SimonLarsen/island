@@ -14,7 +14,6 @@ function love.load()
 	math.randomseed(os.time())
 	loadResources()
 	rescale() -- set window mode
-	lg.setBackgroundColor(color[0])
 
 	trees = {}
 	table.insert(trees,Tree.create(97,109,false))
@@ -146,13 +145,15 @@ function love.keypressed(k,unicode)
 		love.mouse.setVisible(not love.mouse.isVisible())
 	elseif k == 'r' then restart()
 	elseif k == 'm' then raining = not raining
-
+	-- rescaling
 	elseif k == 'f1' then SCALE = 1 rescale() 
 	elseif k == 'f2' then SCALE = 2 rescale() 
 	elseif k == 'f3' then SCALE = 3 rescale() 
 	elseif k == 'f4' then SCALE = 4 rescale() 
 	elseif k == 'f5' then SCALE = 5 rescale() 
 	elseif k == 'f6' then SCALE = 6 rescale() 
+	
+	elseif k == 'f9' then switchTheme()
 	
 	-- debugging keys
 	elseif k == 'h' then

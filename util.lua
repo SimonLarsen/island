@@ -1,14 +1,29 @@
 local lg = love.graphics
 
 function loadResources()
-	color = {}
-	color[0] = {236,243,201}	
-	color[1] = {174,196,64}	
-	color[2] = {61,100,39}	
-	color[3] = {12,26,12}	
+	colorset = {}
+	colorset[0] = {}
+	colorset[0][0] = {238,238,238}	
+	colorset[0][1] = {182,182,182}	
+	colorset[0][2] = {87,87,87}	
+	colorset[0][3] = {22,22,22}	
 
-	tiles = lg.newImage("res/tiles.png")
-	tiles:setFilter("nearest","nearest")
+	colorset[1] = {}
+	colorset[1][0] = {236,243,201}	
+	colorset[1][1] = {174,196,64}	
+	colorset[1][2] = {61,100,39}	
+	colorset[1][3] = {12,26,12}	
+
+	tileset = {}
+	tileset[0] = lg.newImage("res/tiles_bw.png")
+	tileset[1] = lg.newImage("res/tiles_gb.png")
+	tileset[0]:setFilter("nearest","nearest")
+	tileset[1]:setFilter("nearest","nearest")
+
+	current_theme = DEFAULT_TILESET
+	tiles = tileset[current_theme]
+	color = colorset[current_theme]
+	lg.setBackgroundColor(color[0])
 
 	rain = lg.newImage("res/rain.png")
 	rain:setFilter("nearest","nearest")
@@ -69,4 +84,11 @@ function rescale()
 	lg.setMode(WIDTH*SCALE,HEIGHT*SCALE)
 	love.mouse.setVisible(false)
 	love.mouse.setGrab(true)
+end
+
+function switchTheme()
+	current_theme = (current_theme+1)%2
+	tiles = tileset[current_theme]
+	color = colorset[current_theme]
+	lg.setBackgroundColor(color[0])
 end

@@ -115,7 +115,7 @@ function Player:shoot()
 end
 
 function Player:keypressed(k,unicode)
-	if k == "w" and self.jumping < 2 then
+	if (k == "w" or k == ' ') and self.jumping < 2 then
 		self.yspeed = -JUMP_POWER
 		self.jumping = self.jumping + 1
 	elseif unicode >= 48 and unicode <= 57 then
