@@ -60,7 +60,7 @@ function createQuads()
 
 	quadNinja = {}
 	for i=0,6 do
-		quadNinja[i] = lg.newQuad(144+i*8,96,8,14,tiles:getWidth(),tiles:getHeight())
+		quadNinja[i] = lg.newQuad(144+i*9,96,8,14,tiles:getWidth(),tiles:getHeight())
 	end
 	quadNinja[7] = lg.newQuad(208,96,14,14,tiles:getWidth(),tiles:getHeight())
 end

@@ -16,6 +16,7 @@ function Player.create(x,y)
 	self.yspeed = 0
 	self.frame = 0
 	self.weapon = 2 -- gun
+	self.lastdmg = 0.05 -- saber damage spawn timer
 
 	return self
 end
@@ -56,7 +57,11 @@ function Player:update(dt)
 	end
 
 	if self.weapon == 0 then
-		table.insert(bullets,Damage.create(self.x+math.cos(self.rot)*15,self.y+5.5+math.sin(self.rot)*15,0.1,1))
+		self.lastdmg = self.lastdmg - dt
+		if self.lastdmg <= 0 then
+			self.lastdmg = 0.05
+			table.insert(bullets,Damage.create(self.x+math.cos(self.rot)*12,self.y+5.5+math.sin(self.rot)*12,0.05,1,20))
+		end
 	end
 
 	self.yspeed = self.yspeed + GRAVITY*dt
@@ -114,7 +119,10 @@ function Player:keypressed(k,unicode)
 		self.yspeed = -JUMP_POWER
 		self.jumping = self.jumping + 1
 	elseif unicode >= 48 and unicode <= 57 then
-		self.weapon = unicode-48
+		-- TODO: Remove. Temporary test
+		if quadWeapon[unicode-48] ~= nil then
+			self.weapon = unicode-48
+		end
 	end
 end
 

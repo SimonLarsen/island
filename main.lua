@@ -2,7 +2,7 @@ require("defines")
 require("util.lua")
 require("player")
 require("bullet")
-require("blood")
+require("gore")
 require("shark")
 require("ninja")
 require("weather")
@@ -16,13 +16,6 @@ function love.load()
 	rescale() -- set window mode
 	lg.setBackgroundColor(color[0])
 
-	pl = Player.create(54,90)
-
-	bullets = {}
-	enemies = {}
-	particles = {}
-	blood = {}
-
 	trees = {}
 	table.insert(trees,Tree.create(97,109,false))
 	table.insert(trees,Tree.create(43,109,false))
@@ -30,16 +23,29 @@ function love.load()
 
 	platforms = { {x=18,y=124,w=147,h=2} }
 				 --{x=68,y=109,w=21,h=14} }
-
-	rainoffset = 0
+				 --
 	raining = false
 	blood_enabled = true
-
+	rainoffset = 0
 	nextthunder = math.random(5,20)
 	thundertime = 0.5
+	bullet_time = false
+
+	restart()
+end
+
+function restart()
+	pl = Player.create(54,90)
+
+	bullets = {}
+	enemies = {}
+	particles = {}
+	blood = {}
 end
 
 function love.update(dt)
+	if bullet_time then dt = dt/8 end
+
 	mx = love.mouse.getX()/SCALE
 	my = love.mouse.getY()/SCALE
 
@@ -138,7 +144,8 @@ function love.keypressed(k,unicode)
 	elseif k == "g" then
 		love.mouse.setGrab(not love.mouse.isGrabbed())
 		love.mouse.setVisible(not love.mouse.isVisible())
-	elseif k == 'r' then raining = not raining
+	elseif k == 'r' then restart()
+	elseif k == 'm' then raining = not raining
 
 	elseif k == 'f1' then SCALE = 1 rescale() 
 	elseif k == 'f2' then SCALE = 2 rescale() 
@@ -154,6 +161,8 @@ function love.keypressed(k,unicode)
 		table.insert(enemies,Ninja.create())
 	elseif k == 'b' then
 		blood_enabled = not blood_enabled
+	elseif k == 'lshift' then
+		bullet_time = not bullet_time
 	end
 
 	pl:keypressed(k,unicode)

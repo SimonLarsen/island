@@ -127,7 +127,18 @@ function Ninja:draw()
 end
 
 function Ninja:collidePlayer(pl)
-	return false	
+	if self.state == 2 then
+		local hitx = self.x+self.dir*8
+		local hity = self.y+6.5
+
+		if hitx < pl.x-2 or hitx > pl.x+2
+		or hity < pl.y or hity > pl.y+11 then
+			return false
+		end
+		return true
+	else
+		return false
+	end
 end
 
 function Ninja:collideBullets(bullets)

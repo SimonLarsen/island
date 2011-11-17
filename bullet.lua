@@ -37,7 +37,7 @@ end
 Damage = {}
 Damage.__index = Damage
 
-function Damage.create(x,y,time,r)
+function Damage.create(x,y,time,r,dmg)
 	local self = {}
 	setmetatable(self,Damage)
 
@@ -45,7 +45,7 @@ function Damage.create(x,y,time,r)
 	self.y = y
 	self.r = r
 	self.xspeed, self.yspeed = 0, 0
-	self.damage = 5
+	self.damage = dmg
 
 	self.time = time
 	self.alive = true
