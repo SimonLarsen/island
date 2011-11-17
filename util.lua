@@ -1,24 +1,16 @@
 local lg = love.graphics
 
 function loadResources()
-	colorset = {}
-	colorset[0] = {}
-	colorset[0][0] = {238,238,238}	
-	colorset[0][1] = {182,182,182}	
-	colorset[0][2] = {87,87,87}	
-	colorset[0][3] = {22,22,22}	
-
-	colorset[1] = {}
-	colorset[1][0] = {236,243,201}	
-	colorset[1][1] = {174,196,64}	
-	colorset[1][2] = {61,100,39}	
-	colorset[1][3] = {12,26,12}	
-
 	tileset = {}
-	tileset[0] = lg.newImage("res/tiles_bw.png")
-	tileset[1] = lg.newImage("res/tiles_gb.png")
-	tileset[0]:setFilter("nearest","nearest")
-	tileset[1]:setFilter("nearest","nearest")
+	tilesetdata = {}
+	colorset = {}
+
+	for i=0,NUM_TILESETS-1 do
+		tilesetdata[i] = love.image.newImageData("res/tiles"..i..".png")
+		tileset[i] = lg.newImage(tilesetdata[i])
+		tileset[i]:setFilter("nearest","nearest")
+		createColorset(i)
+	end
 
 	current_theme = DEFAULT_TILESET
 	tiles = tileset[current_theme]
@@ -29,6 +21,14 @@ function loadResources()
 	rain:setFilter("nearest","nearest")
 
 	createQuads()
+end
+
+function createColorset(i)
+	colorset[i] = {}
+	for j = 0,3 do
+		local r,g,b,a = tilesetdata[i]:getPixel(tilesetdata[i]:getWidth()-4+j,tilesetdata[i]:getHeight()-1)
+		colorset[i][j] = {r,g,b}
+	end
 end
 
 function createQuads()
@@ -87,7 +87,7 @@ function rescale()
 end
 
 function switchTheme()
-	current_theme = (current_theme+1)%2
+	current_theme = (current_theme+1)%NUM_TILESETS
 	tiles = tileset[current_theme]
 	color = colorset[current_theme]
 	lg.setBackgroundColor(color[0])

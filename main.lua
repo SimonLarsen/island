@@ -21,8 +21,7 @@ function love.load()
 	table.insert(trees,Tree.create(31,111,true))
 
 	platforms = { {x=18,y=124,w=147,h=2} }
-				 --{x=68,y=109,w=21,h=14} }
-				 --
+
 	raining = false
 	blood_enabled = true
 	rainoffset = 0
