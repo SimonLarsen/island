@@ -17,6 +17,7 @@ function Player.create(x,y)
 	self.frame = 0
 	self.weapon = 2 -- gun
 	self.lastdmg = 0.05 -- saber damage spawn timer
+	self.cooldown = 3
 
 	return self
 end
@@ -39,6 +40,12 @@ function Player:update(dt)
 		self.dir = 1
 	end
 
+	-- weapons logic
+	self.cooldown = self.cooldown + dt
+	if love.mouse.isDown("l") or self.weapon == 0 then
+		self:shoot()
+	end
+
 	if self.walking == true then
 		self.frame = (self.frame+dt*12)%6
 	else
@@ -56,15 +63,34 @@ function Player:update(dt)
 		self.yspeed = self.yspeed/2
 	end
 
-	if self.weapon == 0 then
-		self.lastdmg = self.lastdmg - dt
-		if self.lastdmg <= 0 then
-			self.lastdmg = 0.05
-			table.insert(bullets,Damage.create(self.x+math.cos(self.rot)*12,self.y+5.5+math.sin(self.rot)*12,0.05,1,20))
-		end
-	end
-
 	self.yspeed = self.yspeed + GRAVITY*dt
+end
+
+function Player:shoot()
+	-- lightsaber
+	if self.weapon == 0 and self.cooldown > weapon_cooldown[0] then
+		self.cooldown = 0
+		table.insert(bullets,Damage.create(self.x+math.cos(self.rot)*11,self.y+5.5+math.sin(self.rot)*11,weapon_cooldown[0],1,1000))
+		table.insert(bullets,Damage.create(self.x+math.cos(self.rot)*3,self.y+5.5+math.sin(self.rot)*3,weapon_cooldown[0],1,1000))
+	-- gun
+	elseif self.weapon == 1 and self.cooldown > weapon_cooldown[1] then
+		self.cooldown = 0
+		table.insert(bullets,Bullet.create(self.x,self.y+5.5,self.rot))
+	-- shotgun
+	elseif self.weapon == 2 and self.cooldown > weapon_cooldown[2] then
+		self.cooldown = 0
+		for i=0,4 do
+			table.insert(bullets,Bullet.create(self.x,self.y+5.5,self.rot+(math.random()-0.5)/2))
+		end
+	-- uzi
+	elseif self.weapon == 3 and self.cooldown > weapon_cooldown[3] then
+		self.cooldown = 0
+		table.insert(bullets,Bullet.create(self.x,self.y+5.5,self.rot+math.random()/2-0.25))
+	-- bazooka
+	elseif self.weapon == 4 and self.cooldown > weapon_cooldown[4] then
+		self.cooldown = 0
+		table.insert(bullets,Rocket.create(self.x,self.y+5.5,self.rot))
+	end
 end
 
 function Player:collidePlatforms()
@@ -100,20 +126,6 @@ function Player:draw()
 	end
 end
 
-function Player:shoot()
-	if self.weapon == 1 then -- gun
-		table.insert(bullets,Bullet.create(self.x,self.y+5.5,self.rot))
-	elseif self.weapon == 2 then -- shotgun
-		table.insert(bullets,Bullet.create(self.x,self.y+5.5,self.rot+(math.random()-0.5)/2))
-		table.insert(bullets,Bullet.create(self.x,self.y+5.5,self.rot+(math.random()-0.5)/2))
-		table.insert(bullets,Bullet.create(self.x,self.y+5.5,self.rot+(math.random()-0.5)/2))
-		table.insert(bullets,Bullet.create(self.x,self.y+5.5,self.rot+(math.random()-0.5)/2))
-		table.insert(bullets,Bullet.create(self.x,self.y+5.5,self.rot+(math.random()-0.5)/2))
-	elseif self.weapon == 3 then -- bazooka
-		-- TODO: Create rocket }[]==>
-	end
-end
-
 function Player:keypressed(k,unicode)
 	if (k == "w" or k == ' ') and self.jumping < 2 then
 		self.yspeed = -JUMP_POWER
@@ -127,11 +139,9 @@ function Player:keypressed(k,unicode)
 end
 
 function Player:mousepressed(button)
-	if button == 'l' then
-		self:shoot()
-	elseif button == 'wu' then
-		self.weapon = (self.weapon+1)%4
+	if button == 'wu' then
+		self.weapon = (self.weapon+1)%NUM_WEAPONS
 	elseif button == 'wd' then
-		self.weapon = (self.weapon-1)%4
+		self.weapon = (self.weapon-1)%NUM_WEAPONS
 	end
 end

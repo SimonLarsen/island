@@ -1,26 +1,20 @@
 require("defines")
+require("levels")
 require("util.lua")
 require("player")
 require("bullet")
-require("gore")
+require("effects")
 require("shark")
 require("ninja")
 require("weather")
-require("tree")
 
 local lg = love.graphics
 
 function love.load()
 	math.randomseed(os.time())
 	loadResources()
+	SCALE = getOptimalScale()
 	rescale() -- set window mode
-
-	trees = {}
-	table.insert(trees,Tree.create(97,109,false))
-	table.insert(trees,Tree.create(43,109,false))
-	table.insert(trees,Tree.create(31,111,true))
-
-	platforms = { {x=18,y=124,w=147,h=2} }
 
 	raining = false
 	blood_enabled = true
@@ -28,6 +22,9 @@ function love.load()
 	nextthunder = math.random(5,20)
 	thundertime = 0.5
 	bullet_time = false
+
+	level = 2
+	loadLevel(level)
 
 	restart()
 end
@@ -88,38 +85,28 @@ function love.update(dt)
 			-- Kill player or something
 			print("Player hit " .. dt)
 		end
-		v:collideBullets(bullets)
+		v:collideBullets(bullets,dt)
 	end
 end
 
 function love.draw()
 	lg.scale(SCALE,SCALE)
+	-- Draw level background
+	drawLevel(level,false)
 
-	lg.setColor(color[1])
-	lg.rectangle("fill",0,146,180,54)
-	lg.setColor(255,255,255,255)
-
-	-- draw island
-	lg.drawq(tiles,quadIsland,18,115)
-	-- draw trailer
-	lg.drawq(tiles,quadTrailer[0],67,106)
-	-- draw back trees
-	for i,v in ipairs(trees) do
-		v:draw(false)
-	end
 	-- draw bullets
 	for	i,v in ipairs(bullets) do
 		if v.alive then
 			v:draw()
 		end
 	end
+
 	-- Draw player
 	pl:draw()
-	-- draw front trees and poles
-	for i,v in ipairs(trees) do
-		v:draw(true)
-	end
-	lg.drawq(tiles,quadPoles,119,119)
+
+	-- Draw level front
+	drawLevel(level,true)
+
 	-- draw blood
 	drawBlood()
 	-- draw enemies
@@ -151,8 +138,6 @@ function love.keypressed(k,unicode)
 	elseif k == 'f4' then SCALE = 4 rescale() 
 	elseif k == 'f5' then SCALE = 5 rescale() 
 	elseif k == 'f6' then SCALE = 6 rescale() 
-	
-	elseif k == 'f9' then switchTheme()
 	
 	-- debugging keys
 	elseif k == 'h' then

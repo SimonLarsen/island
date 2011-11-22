@@ -141,7 +141,7 @@ function Ninja:collidePlayer(pl)
 	end
 end
 
-function Ninja:collideBullets(bullets)
+function Ninja:collideBullets(bullets,dt)
 	for i,v in ipairs(bullets) do
 		if self:collideRect(v.x-v.r,v.y-v.r,2*v.r,2*v.r) then
 			if blood_enabled then
@@ -149,15 +149,18 @@ function Ninja:collideBullets(bullets)
 					table.insert(blood,BloodParticle.create(v.x,v.y,math.random()-0.5+math.atan2(v.yspeed,v.xspeed)))
 				end
 			end
-			self.hp = self.hp - v.damage
+
+			if v.timed then self.hp = self.hp - v.damage*dt
+			else self.hp = self.hp - v.damage end
+
 			if self.hp <= 0 then
 				table.insert(particles,BodyPart.create(5,self.x,self.y+2,v.xspeed*0.9,v.yspeed+math.random(-50,50),math.pi/2,math.random(-10,10)))
 				table.insert(particles,BodyPart.create(6,self.x,self.y+9,v.xspeed*0.9,v.yspeed+math.random(-50,50),-math.pi/2,math.random(-10,10)))
 				self.alive = false
-				table.remove(bullets,i)
 				return
 			end
-			table.remove(bullets,i)
+
+			v:collide()
 		end
 	end
 end

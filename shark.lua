@@ -76,12 +76,15 @@ function Shark:drawHitCircles()
 	lg.setColor(255,255,255,255)
 end
 
-function Shark:collideBullets(bullets)
+function Shark:collideBullets(bullets,dt)
 	for i,v in ipairs(bullets) do
 		hit, part = self:collideCircleBody(v.x,v.y,v.r)
 		if hit then
-			if part == 4 then self.hp = self.hp - 2*v.damage -- double damage to head
-			else self.hp = self.hp - v.damage end
+			local dmg = v.damage
+			if v.timed then dmg = dmg*dt end
+
+			if part == 4 then self.hp = self.hp - 2*dmg -- double damage to head
+			else self.hp = self.hp - dmg end
 
 			if self.hp <= 0 then
 				self:explode(part,v.xspeed,v.yspeed)
@@ -93,7 +96,7 @@ function Shark:collideBullets(bullets)
 					table.insert(blood,BloodParticle.create(v.x,v.y,math.random()-0.5+math.atan2(v.yspeed,v.xspeed)))
 				end
 			end
-			table.remove(bullets,i)
+			v:collide()
 
 			return
 		end
