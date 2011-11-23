@@ -157,9 +157,7 @@ function Ninja:collideBullets(bullets,dt)
 				table.insert(particles,BodyPart.create(5,self.x,self.y+2,v.xspeed*0.9,v.yspeed+math.random(-50,50),math.pi/2,math.random(-10,10)))
 				table.insert(particles,BodyPart.create(6,self.x,self.y+9,v.xspeed*0.9,v.yspeed+math.random(-50,50),-math.pi/2,math.random(-10,10)))
 				self.alive = false
-				return
 			end
-
 			v:collide()
 		end
 	end

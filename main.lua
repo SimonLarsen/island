@@ -23,7 +23,7 @@ function love.load()
 	thundertime = 0.5
 	bullet_time = false
 
-	level = 2
+	level = 1
 	loadLevel(level)
 
 	restart()
@@ -138,6 +138,10 @@ function love.keypressed(k,unicode)
 	elseif k == 'f4' then SCALE = 4 rescale() 
 	elseif k == 'f5' then SCALE = 5 rescale() 
 	elseif k == 'f6' then SCALE = 6 rescale() 
+
+	-- selecting level
+	elseif k == 'f9' then level = 1 loadLevel(level) restart()
+	elseif k == 'f10' then level = 2 loadLevel(level) restart()
 	
 	-- debugging keys
 	elseif k == 'h' then

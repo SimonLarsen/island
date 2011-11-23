@@ -63,13 +63,13 @@ function Rocket:update(dt)
 	self.x = self.x + self.xspeed*dt + math.random(-20,20)*dt
 	self.y = self.y + self.yspeed*dt + math.random(-20,20)*dt
 
-	self.xspeed = self.xspeed + 3*self.xspeed*dt
-	self.yspeed = self.yspeed + 3*self.yspeed*dt
+	self.xspeed = self.xspeed + 5*self.xspeed*dt
+	self.yspeed = self.yspeed + 5*self.yspeed*dt
 
 	self.nextsmoke = self.nextsmoke - dt
 	if self.nextsmoke <= 0 then
-		self.nextsmoke = 0.05
-		table.insert(particles,Smoke.create(self.x+math.random(-2,2),self.y+math.random(-2,2),0.64))
+		self.nextsmoke = 0.04
+		table.insert(particles,Smoke.create(self.x+math.random(-2,2)/2,self.y+math.random(-2,2)/2,0,0.4))
 	end
 
 	for i,v in ipairs(platforms) do
@@ -95,6 +95,9 @@ end
 
 function Rocket:collide()
 	table.insert(bullets,Damage.create(self.x,self.y,0.5,14,300))
+	for i=0,8 do
+		table.insert(particles,Smoke.create(self.x+math.random(-15,15),self.y+math.random(-15,15),math.random(0,1),math.random()))
+	end
 	self.alive = false
 end
 
