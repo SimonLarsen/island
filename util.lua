@@ -58,6 +58,7 @@ function createQuads()
 		quadWeapon[i] = lg.newQuad(i*16,16,16,6,tiles:getWidth(),tiles:getHeight())
 	end
 	quadRocket = lg.newQuad(64,27,5,5,tiles:getWidth(),tiles:getHeight())
+	quadGrenade = lg.newQuad(80,27,5,5,tiles:getWidth(),tiles:getHeight())
 
 	quadShark = {}
 	for i=0,2 do

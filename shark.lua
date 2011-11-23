@@ -98,7 +98,7 @@ function Shark:collideBullets(bullets,dt)
 			end
 			v:collide()
 
-			return
+			break
 		end
 	end
 end

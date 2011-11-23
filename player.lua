@@ -90,6 +90,10 @@ function Player:shoot()
 	elseif self.weapon == 4 and self.cooldown > weapon_cooldown[4] then
 		self.cooldown = 0
 		table.insert(bullets,Rocket.create(self.x,self.y+5.5,self.rot))
+	-- grenade
+	elseif self.weapon == 5 and self.cooldown > weapon_cooldown[5] then
+		self.cooldown = 0
+		table.insert(bullets,Grenade.create(self.x,self.y+5.5,self.rot))
 	end
 end
 

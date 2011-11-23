@@ -96,7 +96,7 @@ end
 function Rocket:collide()
 	table.insert(bullets,Damage.create(self.x,self.y,0.5,14,300))
 	for i=0,8 do
-		table.insert(particles,Smoke.create(self.x+math.random(-15,15),self.y+math.random(-15,15),math.random(0,1),math.random()))
+		table.insert(particles,Smoke.create(self.x+math.random(-15,15),self.y+math.random(-15,15),math.random(0,1),0.1+math.random()))
 	end
 	self.alive = false
 end
@@ -133,13 +133,89 @@ function Damage:update(dt)
 end
 
 function Damage:collide()
-	
+
 end
 
 function Damage:draw()
-	--[[
-	lg.setColor(0,255,0,255)
-	lg.circle("fill",self.x,self.y,self.r,16)
-	lg.setColor(255,255,255,255)
-	--]]
+end
+
+Grenade = {}
+Grenade.__index = Grenade
+
+function Grenade.create(x,y,dir)
+	local self = {}
+	setmetatable(self,Grenade)
+
+	self.x = x
+	self.y = y
+	self.xspeed = math.cos(dir)*GRENADE_SPEED
+	self.yspeed = math.sin(dir)*GRENADE_SPEED
+	self.rot = dir
+	self.alive = true
+	self.r = 2
+	self.timed = false
+	self.damage = 100
+	self.time = 2
+
+	return self
+end
+
+function Grenade:update(dt)
+	local oldx, oldy = self.x, self.y
+	self.x = self.x + self.xspeed*dt
+	if self:collidePlatforms() then
+		self.x = oldx
+		self.xspeed = self.xspeed*-0.5
+	end
+
+	self.y = self.y + self.yspeed*dt
+	if self:collidePlatforms() then
+		self.y = oldy
+		self.yspeed = self.yspeed*-0.4
+		self.xspeed = self.xspeed*0.6
+	end
+
+	self.yspeed = self.yspeed + GRAVITY*dt
+	self.rot = math.atan2(self.yspeed,self.xspeed)
+
+	self.time = self.time - dt
+	if self.time <= 0 then
+		self:collide()
+	end
+
+	if self.x < -2 or self.x > WIDTH+2 or
+	self.y < -2 or self.y > HEIGHT+2 then
+		self.alive = false
+	end
+end
+
+function Grenade:draw()
+	lg.drawq(tiles,quadGrenade,self.x,self.y,self.rot,1,1,2.5,2.5)
+end
+
+function Grenade:collidePlatforms()
+	for i,v in ipairs(platforms) do
+		if self:collidePlatform(v) then
+			return true
+		end
+	end
+	return false
+end
+
+function Grenade:collidePlatform(p)
+	if self.x-1 > p.x+p.w
+	or self.x+1 < p.x
+	or self.y-1 > p.y+p.h
+	or self.y+1 < p.y then
+		return false
+	end
+	return true
+end
+
+function Grenade:collide()
+	table.insert(bullets,Damage.create(self.x,self.y,0.5,14,300))
+	for i=0,8 do
+		table.insert(particles,Smoke.create(self.x+math.random(-15,15),self.y+math.random(-15,15),math.random(0,1),0.1+math.random()))
+	end
+	self.alive = false
 end
