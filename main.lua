@@ -13,7 +13,7 @@ local lg = love.graphics
 function love.load()
 	math.randomseed(os.time())
 	loadResources()
-	SCALE = getOptimalScale()
+	SCALE = 3
 	rescale() -- set window mode
 
 	raining = false

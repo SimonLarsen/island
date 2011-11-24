@@ -73,6 +73,7 @@ function createQuads()
 	-- ninja parts
 	quadBodyPart[5] = lg.newQuad(144,0,8,7,tiles:getWidth(),tiles:getHeight())
 	quadBodyPart[6] = lg.newQuad(152,0,8,7,tiles:getWidth(),tiles:getHeight())
+	quadBodyPart[7] = lg.newQuad(144,9,8,7,tiles:getWidth(),tiles:getHeight())
 
 	quadNinja = {}
 	for i=0,6 do
@@ -92,11 +93,12 @@ function createQuads()
 end
 
 function rescale()
-	lg.setMode(WIDTH*SCALE,HEIGHT*SCALE)
+	lg.setMode(WIDTH*SCALE,HEIGHT*SCALE,false)
 	love.mouse.setVisible(false)
 	love.mouse.setGrab(true)
 end
 
+-- UNUSED. ONLY WORKS FOR FULLSCREEN MODES
 function getOptimalScale()
 	modes = lg.getModes()	
 	max = 1
