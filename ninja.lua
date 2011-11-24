@@ -146,11 +146,11 @@ function Ninja:collideBullets(bullets,dt)
 		if self:collideRect(v.x-v.r,v.y-v.r,2*v.r,2*v.r) and v.alive then
 			if blood_enabled then
 				for i = 0,3 do
-					table.insert(blood,BloodParticle.create(v.x,v.y,math.random()-0.5+math.atan2(v.yspeed,v.xspeed)))
+					table.insert(blood,BloodParticle.create(v.x,v.y,v.xspeed/2,v.yspeed/2))
 				end
 			end
 
-			if v.timed then self.hp = self.hp - v.damage*dt
+			if v.static then self.hp = self.hp - v.damage*dt
 			else self.hp = self.hp - v.damage end
 
 			v:collide()

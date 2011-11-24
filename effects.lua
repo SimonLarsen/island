@@ -3,14 +3,14 @@ BloodParticle.__index = BloodParticle
 
 local lg = love.graphics
 
-function BloodParticle.create(x,y,rot)
+function BloodParticle.create(x,y,xspeed,yspeed)
 	local self = {}
 	setmetatable(self,BloodParticle)
 
 	self.x = x
 	self.y = y
-	self.xspeed = math.cos(rot)*150+math.random(-20,20)
-	self.yspeed = math.sin(rot)*150+math.random(-20,20)
+	self.xspeed = xspeed+math.random(-20,20)
+	self.yspeed = yspeed+math.random(-20,20)
 	self.radius = 0.1+math.random()
 
 	self.alive = true
@@ -71,7 +71,7 @@ function BodyPart:update(dt)
 	if blood_enabled then
 		self.nextblood = self.nextblood - dt
 		if self.nextblood < 0 then
-			table.insert(blood,BloodParticle.create(self.x,self.y,self.rot))
+			table.insert(blood,BloodParticle.create(self.x,self.y,math.cos(self.rot)*100,math.sin(self.yspeed)*100))
 			self.nextblood = 0.015
 		end
 	end

@@ -81,19 +81,19 @@ function Shark:collideBullets(bullets,dt)
 		hit, part = self:collideCircleBody(v.x,v.y,v.r)
 		if hit then
 			local dmg = v.damage
-			if v.timed then dmg = dmg*dt end
+			if v.static then dmg = dmg*dt end
 
 			if part == 4 then self.hp = self.hp - 2*dmg -- double damage to head
 			else self.hp = self.hp - dmg end
 
 			if self.hp <= 0 then
-				self:explode(part,v.xspeed,v.yspeed)
+				self:explode(part, v.xspeed, v.yspeed)
 				self.alive = false
 			end
 
 			if blood_enabled then
 				for i = 0,3 do
-					table.insert(blood,BloodParticle.create(v.x,v.y,math.random()-0.5+math.atan2(v.yspeed,v.xspeed)))
+					table.insert(blood,BloodParticle.create(v.x,v.y,v.xspeed,v.yspeed))
 				end
 			end
 			v:collide()

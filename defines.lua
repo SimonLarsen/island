@@ -25,7 +25,7 @@ weapon_cooldown = {}
 -- 0: lightsaber
 weapon_cooldown[0] = 0.025
 -- 1: gun
-weapon_cooldown[1] = 0.4
+weapon_cooldown[1] = 0.3
 -- 2: shotgun
 weapon_cooldown[2] = 0.76
 -- 3: uzi

@@ -135,8 +135,7 @@ function Player:keypressed(k,unicode)
 		self.yspeed = -JUMP_POWER
 		self.jumping = self.jumping + 1
 	elseif unicode >= 48 and unicode <= 57 then
-		-- TODO: Remove. Temporary test
-		if quadWeapon[unicode-48] ~= nil then
+		if unicode-48 < NUM_WEAPONS then
 			self.weapon = unicode-48
 		end
 	end

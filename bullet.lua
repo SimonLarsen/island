@@ -12,7 +12,7 @@ function Bullet.create(x,y,dir)
 	self.y = y
 	self.r = 0.5
 	self.damage = 10
-	self.timed = false
+	self.static = false
 
 	self.xspeed = BULLET_SPEED*math.cos(dir)
 	self.yspeed = BULLET_SPEED*math.sin(dir)
@@ -53,7 +53,7 @@ function Rocket.create(x,y,rot)
 	self.r = 1
 	self.nextsmoke = 0.2
 	self.damage = 100
-	self.timed = false
+	self.static = false
 	self.alive = true
 
 	return self
@@ -117,7 +117,7 @@ function Damage.create(x,y,time,r,dmg)
 	self.r = r
 	self.xspeed, self.yspeed = 0, 0
 	self.damage = dmg
-	self.timed = true
+	self.static = true
 
 	self.time = time
 	self.alive = true
@@ -153,7 +153,7 @@ function Grenade.create(x,y,dir)
 	self.rot = dir
 	self.alive = true
 	self.r = 2
-	self.timed = false
+	self.static = false
 	self.damage = 100
 	self.time = 2
 
