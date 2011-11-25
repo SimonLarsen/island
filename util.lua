@@ -81,6 +81,12 @@ function createQuads()
 	end
 	quadNinja[7] = lg.newQuad(128,3,14,14,tiles:getWidth(),tiles:getHeight())
 
+	quadStarNinja = {}
+	for i=0,6 do
+		quadStarNinja[i] = lg.newQuad(176+i*11,2,10,14,tiles:getWidth(),tiles:getHeight())
+	end
+	starQuad = lg.newQuad(157,13,3,3,tiles:getWidth(),tiles:getHeight())
+
 	quadSmoke = {}
 	for i=0,7 do
 		quadSmoke[i] = lg.newQuad(128+i*16,16,16,16,tiles:getWidth(),tiles:getHeight())

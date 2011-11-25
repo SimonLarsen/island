@@ -179,10 +179,6 @@ function Ninja:draw()
 	elseif self.state == 2 then
 		lg.drawq(tiles,quadNinja[7],self.x,self.y,0,xsc,1,10,0)
 	end
-
-	lg.setColor(0,0,255,255)
-	lg.circle("fill",self.x,self.y,2,8)
-	lg.setColor(255,255,255,255)
 end
 
 StarNinja = {}
@@ -211,7 +207,8 @@ function StarNinja.create()
 	-- states:
 	--	0 = entering
 	--	1 = walking
-	self.cooldown = 1
+	self.star = {x=-10,y=-10,xspeed=0,yspeed=0}
+	self.cooldown = 2
 
 	return self
 end
@@ -230,25 +227,11 @@ function StarNinja:update(dt)
 			self.yspeed = self.yspeed/2
 			self.state = 1
 		end
-
-		self.x = self.x + NINJASPEED*dt*self.dir
 	-- WALKING STATE
-	--[[
 	elseif self.state == 1 then
 		if self:collidePlatforms() then
 			self.y = oldy
 			self.yspeed = self.yspeed/2
-		end
-
-		local pldist = self.x-pl.x
-		local abspldist = math.abs(pldist)
-		local plydist = self.y - pl.y
-		if abspldist > 40 then
-			self.dir = pldist/-abspldist
-		elseif abspldist < 20 and self.cooldown <= 0
-		and math.abs(plydist) < 20 then
-			self.state = 2
-			self.cooldown = 0.25
 		end
 
 		if self.x-2 < platforms[1].x then
@@ -257,11 +240,11 @@ function StarNinja:update(dt)
 			self.dir = -1
 		end
 
-		self.x = self.x + NINJASPEED*dt*self.dir
 		self.frame = (self.frame+dt*18)%6
 	--]]
 	end
 
+	self.x = self.x + NINJASPEED*dt*self.dir
 	if self:collidePlatforms() then
 		self.x = oldx
 	end
@@ -269,10 +252,28 @@ function StarNinja:update(dt)
 	if self.y+10 > HEIGHT then
 		self.alive = false
 	end
+	
+	-- ninja star logic
+	if self.cooldown <= 0 then
+		self.star.x = self.x
+		self.star.y = self.y+6
+		self.cooldown = 2
+		local pldist = math.sqrt(math.pow(pl.x-self.x,2)+math.pow(pl.y-self.y,2))
+		self.star.xspeed = ((pl.x-self.x)/pldist)*150
+		self.star.yspeed = ((pl.y-self.y)/pldist)*150
+	end
+	-- update star
+	self.star.x = self.star.x + self.star.xspeed*dt
+	self.star.y = self.star.y + self.star.yspeed*dt
 end
 
 function StarNinja:collidePlayer(pl)
-	return false
+	return pl:collideRect(self.star.x-1.5,self.star.y-1.5,3,3)
+end
+
+function StarNinja:spawnParts(v)
+	table.insert(particles,BodyPart.create(5,self.x,self.y+2,v.xspeed*0.9,v.yspeed+math.random(-50,50),math.pi/2,math.random(-10,10)))
+	table.insert(particles,BodyPart.create(6,self.x,self.y+9,v.xspeed*0.9,v.yspeed+math.random(-50,50),-math.pi/2,math.random(-10,10)))
 end
 
 function StarNinja:draw()
@@ -280,9 +281,13 @@ function StarNinja:draw()
 	if self.dir == 1 then xsc = -1 end
 
 	if self.state == 0 then
-		lg.drawq(tiles,quadNinja[6],self.x,self.y,0,xsc,1,4,0)
+		lg.drawq(tiles,quadStarNinja[6],self.x,self.y,0,xsc,1,4,0)
 	elseif self.state == 1 then
 		local fr = math.floor(self.frame)
-		lg.drawq(tiles,quadNinja[fr],self.x,self.y,0,xsc,1,4,0)
+		lg.drawq(tiles,quadStarNinja[fr],self.x,self.y,0,xsc,1,4,0)
+	end
+
+	if self.star.x > -10 and self.star.y > -10 then
+		lg.drawq(tiles,starQuad,self.star.x,self.star.y,0,1,1,1.5,1.5)
 	end
 end

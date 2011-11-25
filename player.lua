@@ -116,6 +116,16 @@ function Player:collidePlatform(p)
 	return true
 end
 
+function Player:collideRect(x,y,w,h)
+	if self.x-2 > x+w
+	or self.x+2 < x
+	or self.y > y+h
+	or self.y+13 < y then
+		return false
+	end
+	return true
+end
+
 function Player:draw()
 	local xsc = 1
 	if self.dir == 1 then xsc = -1 end

@@ -148,6 +148,8 @@ function love.keypressed(k,unicode)
 		table.insert(enemies,Shark.create())
 	elseif k == 'n' then
 		table.insert(enemies,Ninja.create())
+	elseif k == 'j' then
+		table.insert(enemies,StarNinja.create())
 	elseif k == 'b' then
 		blood_enabled = not blood_enabled
 	elseif k == 'lshift' then
