@@ -17,13 +17,6 @@ function loadResources()
 	rain:setFilter("nearest","nearest")
 
 	createQuads()
-
-	platformset = {}
-	platformset[1] = { {x=18,y=124,w=147,h=2} }
-	platformset[2] = { {x=39,y=140,w=100,h=11},
-					   {x=39,y=132,w=1, h=15 },
-					   {x=138,y=127,w=2, h=17 } }
-	rainingset = {false,true}
 end
 
 function createColors()
@@ -44,7 +37,7 @@ function createQuads()
 	quadTree = lg.newQuad(208,96,8,14,tiles:getWidth(),tiles:getHeight())
 	quadTrailer = lg.newQuad(224,96,23,18,tiles:getWidth(),tiles:getHeight())
 	-- Boat level
-	quadBoatFront = lg.newQuad(96,64,102,26,tiles:getWidth(),tiles:getHeight())
+	quadBoatFront = lg.newQuad(96,64,102,28,tiles:getWidth(),tiles:getHeight())
 	quadBoatBack = lg.newQuad(208,128,93,60,tiles:getWidth(),tiles:getHeight())
 
 	quadPlayer = {}

@@ -16,9 +16,9 @@ function love.load()
 	SCALE = 3
 	rescale() -- set window mode
 
-	raining = false
 	blood_enabled = true
 	rainoffset = 0
+	weathertime = 0
 	nextthunder = math.random(5,20)
 	thundertime = 0.5
 	bullet_time = false
@@ -29,9 +29,12 @@ function love.load()
 	restart()
 end
 
-function restart()
-	pl = Player.create(54,90)
+function respawn()
+	pl:respawn(startpoint[level].x,startpoint[level].y)
+end
 
+function restart()
+	pl = Player.create(startpoint[level].x,startpoint[level].y)
 	bullets = {}
 	enemies = {}
 	particles = {}
@@ -81,9 +84,10 @@ function love.update(dt)
 	end
 
 	for i,v in ipairs(enemies) do
-		if v:collidePlayer(pl) then
+		if v:collidePlayer(pl) and pl.blinking <= 0 then
 			-- Kill player or something
-			print("Player hit " .. dt)
+			print("Player hit at " .. pl.x .. " : " .. pl.y)
+			respawn()
 		end
 		v:collideBullets(bullets,dt)
 	end
@@ -129,7 +133,8 @@ function love.keypressed(k,unicode)
 	elseif k == "g" then
 		love.mouse.setGrab(not love.mouse.isGrabbed())
 		love.mouse.setVisible(not love.mouse.isVisible())
-	elseif k == 'r' then restart()
+	elseif k == 'r' then respawn()
+	elseif k == 'return' then restart()
 	elseif k == 'm' then raining = not raining
 	-- rescaling
 	elseif k == 'f1' then SCALE = 1 rescale() 
@@ -140,8 +145,8 @@ function love.keypressed(k,unicode)
 	elseif k == 'f6' then SCALE = 6 rescale() 
 
 	-- selecting level
-	elseif k == 'f9' then level = 1 loadLevel(level) restart()
-	elseif k == 'f10' then level = 2 loadLevel(level) restart()
+	elseif k == 'f9' then level = 1 loadLevel(level) respawn()
+	elseif k == 'f10' then level = 2 loadLevel(level) respawn()
 	
 	-- debugging keys
 	elseif k == 'h' then

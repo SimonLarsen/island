@@ -1,6 +1,7 @@
 local lg = love.graphics
 
 function updateWeather(dt)
+	weathertime = weathertime + dt
 	if raining then
 		rainoffset = (rainoffset + dt*RAINSPEED)%HEIGHT
 

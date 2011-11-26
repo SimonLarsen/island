@@ -1,8 +1,20 @@
 local lg = love.graphics
 
+-- Level definitions
+platformset = {}
+platformset[1] = { {x=18,y=124,w=147,h=2} }
+platformset[2] = { {x=39,y=140,w=100,h=11},
+				   {x=39,y=132,w=1, h=15 },
+				   {x=138,y=127,w=2, h=17 } }
+
+rainingset = {false,true}
+wavingset = {false,true}
+startpoint = {{x=90,y=100},{x=90,y=100}}
+
 function loadLevel(level)
 	platforms = platformset[level]	
 	raining = rainingset[level]
+	waving = wavingset[level]
 end
 
 function drawLevel(level,front)
@@ -36,6 +48,7 @@ end
 
 function drawLevelBoat(front)
 	if not front then
+		lg.translate(0,1+math.sin(2*weathertime))
 		-- Draw water
 		lg.setColor(color[1])
 		lg.rectangle("fill",0,146,180,54)

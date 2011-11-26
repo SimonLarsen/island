@@ -16,14 +16,15 @@ function Player.create(x,y)
 	self.yspeed = 0
 	self.frame = 0
 	self.weapon = 2 -- gun
-	self.lastdmg = 0.05 -- saber damage spawn timer
 	self.cooldown = 3
+	self.blinking = BLINK_TIME
 
 	return self
 end
 
 function Player:update(dt)
 	self.rot = math.atan2(my-self.y-5.5, mx-self.x+0.5)
+	if self.blinking > 0 then self.blinking = self.blinking - dt end
 
 	local oldx,oldy
 	oldx, oldy = self.x, self.y
@@ -127,16 +128,18 @@ function Player:collideRect(x,y,w,h)
 end
 
 function Player:draw()
-	local xsc = 1
-	if self.dir == 1 then xsc = -1 end
-	local fr = 0
-	if self.walking then fr = math.floor(self.frame)+1 end
+	if self.blinking <= 0 or math.floor(self.blinking*15)%2 == 0 then
+		local xsc = 1
+		if self.dir == 1 then xsc = -1 end
+		local fr = 0
+		if self.walking then fr = math.floor(self.frame)+1 end
 
-	lg.drawq(tiles,quadPlayer[fr],self.x,self.y,0,xsc,1,4,0)
-	if self.weapon ~= 0 then -- gun
-		lg.drawq(tiles,quadWeapon[self.weapon],self.x,self.y+6,self.rot,-1,-xsc,8,2.5)
-	else -- lightsaber
-		lg.drawq(tiles,quadWeapon[self.weapon],self.x,self.y+6,self.rot,-1,1,16,2.5)
+		lg.drawq(tiles,quadPlayer[fr],self.x,self.y,0,xsc,1,4,0)
+		if self.weapon ~= 0 then -- gun
+			lg.drawq(tiles,quadWeapon[self.weapon],self.x,self.y+6,self.rot,-1,-xsc,8,2.5)
+		else -- lightsaber
+			lg.drawq(tiles,quadWeapon[self.weapon],self.x,self.y+6,self.rot,-1,1,16,2.5)
+		end
 	end
 end
 
@@ -157,4 +160,10 @@ function Player:mousepressed(button)
 	elseif button == 'wd' then
 		self.weapon = (self.weapon-1)%NUM_WEAPONS
 	end
+end
+
+function Player:respawn(x,y)
+	self.x = x
+	self.y = y
+	self.blinking = BLINK_TIME
 end
