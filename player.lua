@@ -3,6 +3,10 @@ Player.__index = Player
 
 local lg = love.graphics
 
+function Player.create()
+	return Player.create(startpoint[level].x,startpoint[level].y)	
+end
+
 function Player.create(x,y)
 	local self = {}
 	setmetatable(self,Player)
@@ -18,6 +22,9 @@ function Player.create(x,y)
 	self.weapon = 2 -- gun
 	self.cooldown = 3
 	self.blinking = BLINK_TIME
+
+	self.lives = 3
+	self.money = 0
 
 	return self
 end
@@ -162,8 +169,13 @@ function Player:mousepressed(button)
 	end
 end
 
-function Player:respawn(x,y)
-	self.x = x
-	self.y = y
+function Player:kill()
+	self.lives = self.lives - 1
+	respawn()
+end
+
+function Player:respawn()
+	self.x = startpoint[level].x
+	self.y = startpoint[level].y
 	self.blinking = BLINK_TIME
 end

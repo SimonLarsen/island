@@ -30,7 +30,7 @@ function love.load()
 end
 
 function respawn()
-	pl:respawn(startpoint[level].x,startpoint[level].y)
+	pl:respawn()
 end
 
 function restart()
@@ -85,9 +85,7 @@ function love.update(dt)
 
 	for i,v in ipairs(enemies) do
 		if v:collidePlayer(pl) and pl.blinking <= 0 then
-			-- Kill player or something
-			print("Player hit at " .. pl.x .. " : " .. pl.y)
-			respawn()
+			pl:kill()
 		end
 		v:collideBullets(bullets,dt)
 	end
@@ -125,6 +123,15 @@ function love.draw()
 	drawWeather()
 	-- Draw crosshair
 	lg.drawq(tiles,quadCross,mx-3,my-3)
+	-- Draw HUD
+	for i=0,2 do
+		lg.drawq(tiles,quadNoHeart,10+i*11,10)
+		if i < pl.lives then
+			lg.drawq(tiles,quadHeart,10+i*11,10)
+		end
+	end
+	lg.drawq(tiles,quadCoin,69,9)
+	lg.printf(pl.money,77,9,100,"left")
 end
 
 function love.keypressed(k,unicode)

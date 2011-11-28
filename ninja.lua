@@ -36,6 +36,7 @@ function BaseNinja:collideBullets(bullets,dt)
 			if self.hp <= 0 then
 				self:spawnParts(v)
 				self.alive = false
+				pl.money = pl.money + self.reward
 				break
 			end
 		end
@@ -50,7 +51,7 @@ function BaseNinja:collideRect(x,y,w,h)
 	return true
 end
 
-Ninja = {}
+Ninja = {reward = 30}
 Ninja.__index = Ninja
 setmetatable(Ninja,BaseNinja)
 
@@ -181,7 +182,7 @@ function Ninja:draw()
 	end
 end
 
-StarNinja = {}
+StarNinja = {reward = 50}
 StarNinja.__index = StarNinja
 setmetatable(StarNinja,BaseNinja)
 

@@ -1,4 +1,4 @@
-Shark = {}
+Shark = {reward = "25"}
 Shark.__index = Shark
 
 local lg = love.graphics
@@ -89,6 +89,7 @@ function Shark:collideBullets(bullets,dt)
 			if self.hp <= 0 then
 				self:explode(part, v.xspeed, v.yspeed)
 				self.alive = false
+				pl.money = pl.money + self.reward
 			end
 
 			if blood_enabled then

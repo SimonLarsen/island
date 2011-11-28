@@ -17,6 +17,11 @@ function loadResources()
 	rain:setFilter("nearest","nearest")
 
 	createQuads()
+
+	fontImage = lg.newImage("res/font.png")
+	fontImage:setFilter("nearest","nearest")
+	font = lg.newImageFont(fontImage," 0123456789abcdefghijklmnopqrstuvxyzABCDEFGHIJKLMNOPQRSTUVXYZ!-.,$")
+	lg.setFont(font)
 end
 
 function createColors()
@@ -89,6 +94,11 @@ function createQuads()
 	for i=0,7 do
 		quadExplosion[i] = lg.newQuad(256+i*16,16,16,16,tiles:getWidth(),tiles:getHeight())
 	end
+
+	-- HUD stuff
+	quadHeart = lg.newQuad(208,64,9,8,tiles:getWidth(),tiles:getHeight())
+	quadNoHeart = lg.newQuad(224,64,9,8,tiles:getWidth(),tiles:getHeight())
+	quadCoin = lg.newQuad(240,64,6,9,tiles:getWidth(),tiles:getHeight())
 end
 
 function rescale()
