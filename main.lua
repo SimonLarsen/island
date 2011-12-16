@@ -22,6 +22,7 @@ function love.load()
 	nextthunder = math.random(5,20)
 	thundertime = 0.5
 	bullet_time = false
+	coinframe = 0
 
 	level = 1
 	loadLevel(level)
@@ -34,7 +35,7 @@ function respawn()
 end
 
 function restart()
-	pl = Player.create(startpoint[level].x,startpoint[level].y)
+	pl = Player.create()
 	bullets = {}
 	enemies = {}
 	particles = {}
@@ -42,11 +43,15 @@ function restart()
 end
 
 function love.update(dt)
-	if bullet_time then dt = dt/8 end
+	if dt > 0.1 then dt = 0.1 end
 
 	mx = love.mouse.getX()/SCALE
 	my = love.mouse.getY()/SCALE
 
+	if coinframe > 0 then coinframe = coinframe - dt end
+
+	if bullet_time then dt = dt/8 end
+	-- everything below here will be affected by slow motion
 	pl:update(dt)
 
 	updateWeather(dt)
@@ -87,7 +92,9 @@ function love.update(dt)
 		if v:collidePlayer(pl) and pl.blinking <= 0 then
 			pl:kill()
 		end
-		v:collideBullets(bullets,dt)
+		if v:collideBullets(bullets,dt) then
+
+		end
 	end
 end
 
@@ -130,8 +137,13 @@ function love.draw()
 			lg.drawq(tiles,quadHeart,10+i*11,10)
 		end
 	end
-	lg.drawq(tiles,quadCoin,69,9)
+	if coinframe > 0 then
+		lg.drawq(tiles,quadCoin[math.floor(10*coinframe)],69,9)
+	else
+		lg.drawq(tiles,quadCoin[0],69,9)
+	end
 	lg.printf(pl.money,77,9,100,"left")
+	lg.drawq(tiles,quadHUDWeapon[pl.weapon],143,5)
 end
 
 function love.keypressed(k,unicode)

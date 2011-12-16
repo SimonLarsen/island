@@ -77,6 +77,7 @@ function Shark:drawHitCircles()
 end
 
 function Shark:collideBullets(bullets,dt)
+	local killed = false
 	for i,v in ipairs(bullets) do
 		hit, part = self:collideCircleBody(v.x,v.y,v.r)
 		if hit then
@@ -90,6 +91,7 @@ function Shark:collideBullets(bullets,dt)
 				self:explode(part, v.xspeed, v.yspeed)
 				self.alive = false
 				pl.money = pl.money + self.reward
+				coinframe = 0.39999
 			end
 
 			if blood_enabled then
@@ -98,10 +100,12 @@ function Shark:collideBullets(bullets,dt)
 				end
 			end
 			v:collide()
+			killed = true
 
 			break
 		end
 	end
+	return killed
 end
 
 function Shark:collidePlayer(pl)

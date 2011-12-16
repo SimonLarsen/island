@@ -98,7 +98,14 @@ function createQuads()
 	-- HUD stuff
 	quadHeart = lg.newQuad(208,64,9,8,tiles:getWidth(),tiles:getHeight())
 	quadNoHeart = lg.newQuad(224,64,9,8,tiles:getWidth(),tiles:getHeight())
-	quadCoin = lg.newQuad(240,64,6,9,tiles:getWidth(),tiles:getHeight())
+	quadCoin = {}
+	for i=0,3 do
+		quadCoin[i] = lg.newQuad(240+i*8,64,6,9,tiles:getWidth(),tiles:getHeight())
+	end
+	quadHUDWeapon = {}
+	for i=0,NUM_WEAPONS-1 do
+		quadHUDWeapon[i] = lg.newQuad(480,0+i*16,32,16,tiles:getWidth(),tiles:getHeight())
+	end
 end
 
 function rescale()

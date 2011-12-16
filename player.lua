@@ -3,16 +3,12 @@ Player.__index = Player
 
 local lg = love.graphics
 
-function Player.create()
-	return Player.create(startpoint[level].x,startpoint[level].y)	
-end
-
 function Player.create(x,y)
 	local self = {}
 	setmetatable(self,Player)
 
-	self.x = x
-	self.y = y
+	self.x = x or startpoint[level].x
+	self.y = y or startpoint[level].y
 	self.rot = 0
 	self.dir = 1 -- -1 = left, 1 = right
 	self.walking = false
